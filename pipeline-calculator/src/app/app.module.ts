@@ -5,6 +5,8 @@ import { AppComponent } from './app.component';
 import { ParameterInputComponent } from './components/parameter-input/parameter-input.component';
 import { ExportSettingsComponent } from './components/export-settings/export-settings.component';
 
+import { ReactiveFormsModule } from '@angular/forms';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -12,7 +14,8 @@ import { ExportSettingsComponent } from './components/export-settings/export-set
     ExportSettingsComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

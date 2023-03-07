@@ -1,23 +1,23 @@
-<div className="container-main">
-  <div className="container-left">
-
-      <div className="container-top">
-      <div className="container-parameters">
-      <h3>Parameters</h3>
-
+<div class="container-title">
+  Pipeline Buoyancy Module Calculator
+</div>
+<div class="container-content">
+  <div class="container-left">
+      <div class="container-top">
+        <div class="container-parameters">
+        <app-parameter-input
+          (parameterEmitter)="updateParameters($event)"
+        ></app-parameter-input>
       </div>
-      <div className="container-export-options">
-      <h3>Export Settings</h3>
+      <div class="container-export-options">
+        <h3>Export Settings</h3>
       </div>
-
       </div>
-      <div className="container-bottom">
-      <h3>Data Visualisation</h3>
-      <div>{this.renderedAttributes}</div>
+      <div class="container-data-vis">
+        <h3>Data Visualisation</h3>
       </div>
-
   </div>
-  <div className="container-settings">
+  <div class="container-settings">
       <h3>Settings</h3>
   </div>
 </div>

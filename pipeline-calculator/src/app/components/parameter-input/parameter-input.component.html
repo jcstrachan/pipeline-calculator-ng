@@ -1,1 +1,35 @@
-<p>parameter-input works!</p>
+<form class="parameter-input" [formGroup]="parametersForm" (ngSubmit)="onSubmit()">
+
+    <label for="theta-s">Theta(S) Values (comma seperated)</label>
+    <input id="theta-s" type="text" formControlName="thetaS" required="True">
+    <br>
+    <label for="pipeline-outer-diameter">Pipeline Outer Diameter</label>
+    <input id="pipeline-outer-diameter" type="number" formControlName="pipelineOuterDiameter">
+    <br>
+    <label for="pipeline-wall-thickness">Pipeline Wall Thickness</label>
+    <input id="pipeline-wall-thickness" type="number" formControlName="pipelineWallThickness">
+    <br>
+    <label for="pipeline-elasticity-modulus">Pipeline Elasticity Modulus</label>
+    <input id="pipeline-elasticity-modulus" type="number" formControlName="pipelineElasticityModulus">
+    <br>
+    <label for="pipeline-density">Pipeline Density</label>
+    <input id="pipeline-density" type="number" formControlName="pipelineDensity">
+    <br>
+    <label for="seawater-density">Seawater Density</label>
+    <input id="seawater-density" type="number" formControlName="seawaterDensity">
+    <br>
+    <label for="span-length">Span Length</label>
+    <input id="span-length" type="number" formControlName="spanLength">
+    <br>
+    <label for="elevation-gap">Elevation Gap</label>
+    <input id="elevation-gap" type="number" formControlName="elevationGap">
+    <br>
+    <label for="span-shoulder-length">Span Shoulder Length</label>
+    <input id="span-shoulder-length" type="number" formControlName="spanShoulderLength">
+    <br>
+    <label for="seawater-stiffness">Seawater Stiffness</label>
+    <input id="seawater-stiffness" type="number" formControlName="seawaterStiffness">
+    <br>
+    <button [disabled]="!parametersForm.valid" type="submit">Submit</button>
+
+</form>
