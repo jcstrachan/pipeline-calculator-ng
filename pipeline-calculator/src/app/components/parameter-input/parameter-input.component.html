@@ -1,35 +1,38 @@
-<form class="parameter-input" [formGroup]="parametersForm" (ngSubmit)="onSubmit()">
+<div class="parameter-input">
+    <h2>Parameter Input</h2>
+    <form class="parameter-form" [formGroup]="parametersForm" (ngSubmit)="onSubmit()">
+        
+        <div class="parent">
 
-    <label for="theta-s">Theta(S) Values (comma seperated)</label>
-    <input id="theta-s" type="text" formControlName="thetaS" required="True">
-    <br>
-    <label for="pipeline-outer-diameter">Pipeline Outer Diameter</label>
-    <input id="pipeline-outer-diameter" type="number" formControlName="pipelineOuterDiameter">
-    <br>
-    <label for="pipeline-wall-thickness">Pipeline Wall Thickness</label>
-    <input id="pipeline-wall-thickness" type="number" formControlName="pipelineWallThickness">
-    <br>
-    <label for="pipeline-elasticity-modulus">Pipeline Elasticity Modulus</label>
-    <input id="pipeline-elasticity-modulus" type="number" formControlName="pipelineElasticityModulus">
-    <br>
-    <label for="pipeline-density">Pipeline Density</label>
-    <input id="pipeline-density" type="number" formControlName="pipelineDensity">
-    <br>
-    <label for="seawater-density">Seawater Density</label>
-    <input id="seawater-density" type="number" formControlName="seawaterDensity">
-    <br>
-    <label for="span-length">Span Length</label>
-    <input id="span-length" type="number" formControlName="spanLength">
-    <br>
-    <label for="elevation-gap">Elevation Gap</label>
-    <input id="elevation-gap" type="number" formControlName="elevationGap">
-    <br>
-    <label for="span-shoulder-length">Span Shoulder Length</label>
-    <input id="span-shoulder-length" type="number" formControlName="spanShoulderLength">
-    <br>
-    <label for="seawater-stiffness">Seawater Stiffness</label>
-    <input id="seawater-stiffness" type="number" formControlName="seawaterStiffness">
-    <br>
-    <button [disabled]="!parametersForm.valid" type="submit">Submit</button>
+            <div class="child"><label for="theta-function">Theta Function</label></div>
+            <div class="child"><label for="pipeline-arc-length">Pipeline Arc Length</label></div>
+            <div class="child"><label for="finite-difference-subinteval-amount">Number of finite difference subintervals</label></div>
+            <div class="child"><label for="pipeline-outer-diameter">Pipeline Outer Diameter</label></div>
+            <div class="child"><label for="pipeline-wall-thickness">Pipeline Wall Thickness</label></div>
+            <div class="child"><label for="pipeline-elasticity-modulus">Pipeline Elasticity Modulus</label></div>
+            <div class="child"><label for="pipeline-density">Pipeline Density</label></div>
+            <div class="child"><label for="seawater-density">Seawater Density</label></div>
+            <div class="child"><label for="span-length">Span Length</label></div>
+            <div class="child"><label for="elevation-gap">Elevation Gap</label></div>
+            <div class="child"><label for="span-shoulder-length">Span Shoulder Length</label></div>
+            <div class="child"><label for="seafloor-stiffness">Seafloor Stiffness</label></div>
 
-</form>
+            
+            <div class="child"><input id="theta-function" type="text" formControlName="thetaFunction" required="True"></div>
+            <div class="child"><input id="pipeline-arc-length" type="number" formControlName="pipelineArcLength" required="True"></div>
+            <div class="child"><input id="finite-difference-subinteval-amount" type="number" formControlName="finiteDifferenceSubintervalAmount" required="True"></div>
+            <div class="child"><input id="pipeline-outer-diameter" type="number" formControlName="pipelineOuterDiameter"></div>
+            <div class="child"><input id="pipeline-wall-thickness" type="number" formControlName="pipelineWallThickness"></div>
+            <div class="child"><input id="pipeline-elasticity-modulus" type="number" formControlName="pipelineElasticityModulus"></div>
+            <div class="child"><input id="pipeline-density" type="number" formControlName="pipelineDensity"></div>
+            <div class="child"><input id="seawater-density" type="number" formControlName="seawaterDensity"></div>
+            <div class="child"><input id="span-length" type="number" formControlName="spanLength"></div>
+            <div class="child"><input id="elevation-gap" type="number" formControlName="elevationGap"></div>
+            <div class="child"><input id="span-shoulder-length" type="number" formControlName="spanShoulderLength"></div>
+            <div class="child"><input id="seafloor-stiffness" type="number" formControlName="seafloorStiffness"></div>
+
+        </div>
+
+    </form>
+    <button mat-raised-button [disabled]="!parametersForm.valid" type="submit">Submit Parameters</button>
+</div>

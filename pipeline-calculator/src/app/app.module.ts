@@ -6,16 +6,21 @@ import { ParameterInputComponent } from './components/parameter-input/parameter-
 import { ExportSettingsComponent } from './components/export-settings/export-settings.component';
 
 import { ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
     AppComponent,
     ParameterInputComponent,
-    ExportSettingsComponent
+    ExportSettingsComponent,
   ],
   imports: [
     BrowserModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
