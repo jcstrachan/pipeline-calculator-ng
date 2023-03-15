@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter  } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { IPipelineParameters } from 'src/app/interfaces/pipeline-parameters';
-import { MatButtonModule } from '@angular/material/button';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 
 @Component({
   selector: 'app-parameter-input',
