@@ -1,5 +1,4 @@
 export interface IPipelineParameters {
-    thetaFunction: string;
     pipelineArcLength: number;
     finiteDifferenceSubintervalAmount: number;
     pipelineOuterDiameter: number;
@@ -10,5 +9,6 @@ export interface IPipelineParameters {
     spanLength: number;
     elevationGap: number;
     spanShoulderLength: number;
+    effectiveAxialTension: number;
     seafloorStiffness: number;
 }

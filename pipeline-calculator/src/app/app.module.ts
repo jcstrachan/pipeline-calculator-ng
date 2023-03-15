@@ -4,23 +4,25 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { ParameterInputComponent } from './components/parameter-input/parameter-input.component';
 import { ExportSettingsComponent } from './components/export-settings/export-settings.component';
+import { DataVisualisationComponent } from './components/data-visualisation/data-visualisation.component';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { MatButtonModule } from '@angular/material/button';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     ParameterInputComponent,
     ExportSettingsComponent,
+    DataVisualisationComponent,
   ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    MatButtonModule
+    MatButtonModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

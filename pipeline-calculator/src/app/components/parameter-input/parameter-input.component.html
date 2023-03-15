@@ -3,8 +3,6 @@
     <form class="parameter-form" [formGroup]="parametersForm" (ngSubmit)="onSubmit()">
         
         <div class="parent">
-
-            <div class="child"><label for="theta-function">Theta Function</label></div>
             <div class="child"><label for="pipeline-arc-length">Pipeline Arc Length</label></div>
             <div class="child"><label for="finite-difference-subinteval-amount">Number of finite difference subintervals</label></div>
             <div class="child"><label for="pipeline-outer-diameter">Pipeline Outer Diameter</label></div>
@@ -17,8 +15,6 @@
             <div class="child"><label for="span-shoulder-length">Span Shoulder Length</label></div>
             <div class="child"><label for="seafloor-stiffness">Seafloor Stiffness</label></div>
 
-            
-            <div class="child"><input id="theta-function" type="text" formControlName="thetaFunction" required="True"></div>
             <div class="child"><input id="pipeline-arc-length" type="number" formControlName="pipelineArcLength" required="True"></div>
             <div class="child"><input id="finite-difference-subinteval-amount" type="number" formControlName="finiteDifferenceSubintervalAmount" required="True"></div>
             <div class="child"><input id="pipeline-outer-diameter" type="number" formControlName="pipelineOuterDiameter"></div>
