@@ -47,7 +47,7 @@ export class AppComponent {
     for (let i = 0; i < parameters.finiteDifferenceSubintervalAmount; i++) {
       let totalValue: number = 0;
       for (let j = 0; j < i - 1; j++) {
-        totalValue += Math.cos(this.getThetaValue(currentInterval));
+        totalValue += Math.cos(this.getThetaValue(parameters.thetaFunction, currentInterval));
         currentInterval += deltaS;
       }
       xVals.push(totalValue)
@@ -58,7 +58,7 @@ export class AppComponent {
     for (let i = 0; i < parameters.finiteDifferenceSubintervalAmount; i++) {
       let totalValue = 0;
       for (let j = 0; j < i - 1; j++) {
-        totalValue += Math.sin(this.getThetaValue(currentInterval));
+        totalValue += Math.sin(this.getThetaValue(parameters.thetaFunction, currentInterval));
         currentInterval += deltaS;
       }
       totalValue += embedment;
@@ -69,7 +69,7 @@ export class AppComponent {
     return [xVals, zVals]
   }
 
-  private getThetaValue(s:number): number {
+  private getThetaValue(thetaFunction: string, s:number): number {
     let thetaValue: number = 0
     return thetaValue
   }
