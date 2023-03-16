@@ -9,7 +9,7 @@ import { EChartsOption } from 'echarts';
 export class DataVisualisationComponent {
 
   private func(x: number) {
-    return Math.cos(0.05*x) * 100;
+    return -Math.cos(0.03*x) * 20;
   }
   
   private generateData() {

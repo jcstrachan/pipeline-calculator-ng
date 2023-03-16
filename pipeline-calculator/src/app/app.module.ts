@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { DataVisualisationComponent } from './components/data-visualisation/data-visualisation.component';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { SettingsComponent } from './components/settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
     ParameterInputComponent,
     ExportSettingsComponent,
     DataVisualisationComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,
