@@ -1,8 +1,6 @@
 import { Component, Output, EventEmitter  } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
-import { Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { IPipelineParameters } from 'src/app/interfaces/pipeline-parameters';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 
 @Component({
   selector: 'app-parameter-input',
@@ -14,7 +12,6 @@ export class ParameterInputComponent {
   @Output() parameterEmitter = new EventEmitter();
 
   public parametersForm = new FormGroup({
-    thetaFunction: new FormControl<string>('', {nonNullable: true, validators: [Validators.required]}),
     pipelineArcLength: new FormControl<number>(0, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
     finiteDifferenceSubintervalAmount: new FormControl<number>(0, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
     pipelineOuterDiameter: new FormControl<number>(0, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
@@ -25,13 +22,13 @@ export class ParameterInputComponent {
     spanLength: new FormControl<number>(0, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
     elevationGap: new FormControl<number>(0, {nonNullable: true, validators: [Validators.required]}),
     spanShoulderLength: new FormControl<number>(0, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
+    effectiveAxialTension: new FormControl<number>(0, {nonNullable: true, validators: [Validators.required]}),
     seafloorStiffness: new FormControl<number>(0, {nonNullable: true, validators: [Validators.required, Validators.min(1)]})
   });
 
   onSubmit() {
     console.warn(this.parametersForm.value);
     var parameters: IPipelineParameters = {
-      thetaFunction: this.parametersForm.value.thetaFunction?.trim() || '',
       pipelineArcLength: this.parametersForm.value.pipelineArcLength || 0,
       finiteDifferenceSubintervalAmount: this.parametersForm.value.finiteDifferenceSubintervalAmount || 0,
       pipelineOuterDiameter: this.parametersForm.value.pipelineOuterDiameter || 0,
@@ -42,6 +39,7 @@ export class ParameterInputComponent {
       spanLength: this.parametersForm.value.spanLength || 0,
       elevationGap: this.parametersForm.value.elevationGap || 0,
       spanShoulderLength: this.parametersForm.value.spanShoulderLength || 0,
+      effectiveAxialTension: this.parametersForm.value.effectiveAxialTension || 0,
       seafloorStiffness: this.parametersForm.value.seafloorStiffness || 0
     }
     this.parameterEmitter.emit(parameters);
