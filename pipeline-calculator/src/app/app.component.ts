@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IPipelineParameters } from './interfaces/pipeline-parameters';
 import * as numeric from 'numeric';
+import { IPipeline } from './interfaces/pipeline';
 
 @Component({
   selector: 'app-root',
@@ -28,9 +29,14 @@ export class AppComponent {
     // The first step to the calculations is to get the xz coordinates
     [x, z] = this.calculateXZ(this.parameters, w_g);
 
-    // Next we can calculate the 
+    // Next we back-calculate the forces acting on the pipeline
 
 
+  }
+
+  private getThetaValue(s:number): number {
+    let thetaValue: number = 0;
+    return thetaValue;
   }
 
   private calculateXZ(parameters: IPipelineParameters, w_g: number): Array<Array<number>> {
@@ -50,7 +56,7 @@ export class AppComponent {
         totalValue += Math.cos(this.getThetaValue(currentInterval));
         currentInterval += deltaS;
       }
-      xVals.push(totalValue)
+      xVals.push(totalValue);
     }
 
     // Next we can calculate the z coordinate using equation 16
@@ -62,19 +68,30 @@ export class AppComponent {
         currentInterval += deltaS;
       }
       totalValue += embedment;
-      zVals.push(totalValue)
+      zVals.push(totalValue);
     } 
 
     // We can now return the x and z values
-    return [xVals, zVals]
+    return [xVals, zVals];
   }
 
-  private getThetaValue(s:number): number {
-    let thetaValue: number = 0
-    return thetaValue
+  // Takes an array of IPipeline and returns the most optimal 
+  private findOptimalLength(pipelines: IPipeline[]): number { 
+    return 0;
   }
 
 
+  // Takes an IPipeline object as input and returns an array of its max forces
+  private findMaxForces(pipeline: IPipeline): number[] {
+    // Defining all the max forces
+    let minElevationGap: number = Math.max(...pipeline.elevationValues) - Math.min(...pipeline.elevationValues);
+    let minBendingDifference: number = Math.max(...pipeline.bendingMoments) - Math.abs(Math.min(...pipeline.bendingMoments));
+    let maxShearForce: number = Math.max(...pipeline.shearForces);
+    let maxAxialTension: number = Math.max(...pipeline.axialTensionForces);
+
+    // Returning max forces in an array
+    return [minElevationGap, minBendingDifference, maxShearForce, maxAxialTension];
+  }
 
 
 }
