@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { DataVisualisationComponent } from './components/data-visualisation/data-visualisation.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { SettingsComponent } from './components/settings/settings.component';
+import { ChartComponent } from './components/data-visualisation/chart/chart.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { SettingsComponent } from './components/settings/settings.component';
     ExportSettingsComponent,
     DataVisualisationComponent,
     SettingsComponent,
+    ChartComponent,
   ],
   imports: [
     BrowserModule,

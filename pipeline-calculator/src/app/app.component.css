@@ -4,63 +4,55 @@
     padding: 2.5px 0 0 5px;
 }
 
-.container-content {
-    width: 100vw;
-    height: 95%;
-    min-height: 95%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    padding: 5px;
-    background-color:rgb(238, 238, 238);
+.container {
+    background-color: rgb(196, 196, 196);
 }
 
-.container-left {
+.content {
+    box-sizing: border-box;
+    height: 95%;
+    display: flex;
+    flex-direction: row;
+    background-color:rgb(238, 238, 238);
+    padding: 5px;
+}
+
+.left {
     width: 85%;
     display: flex;
     flex-direction: column;
+    margin-right: 5px;
 }
 
-.container-settings {
-    background-color: rgb(196, 196, 196);
+.settings {
     border-radius: 5px;
-    margin-left: 5px;
     width: 15%;
-    padding: 5px 5px;
 }
 
-.container-top {
+.top {
     height: 75%;
     display: flex;
     flex-direction: row;
+    margin-bottom: 5px;
 }
 
-.container-data-vis {
+.data-vis {
     height: 100%;
-    background-color: rgb(196, 196, 196);
     border-radius: 5px;
-    margin-top: 5px;
 }
 
-.container-parameters {
-    background-color: rgb(196, 196, 196);
+.parameters {
     width: 60%;
     border-radius: 5px;
-    margin-bottom: 2.5px;
-    margin-right: 2.5px;
+    margin-right: 5px;
 }
 
-.container-export-options {
-    background-color: rgb(196, 196, 196);
+.export-options {
     border-radius: 5px;
     width: 40%;
-    margin-bottom: 2.5px;
-    margin-left: 2.5px;
-    padding: 5px 5px;
 }
 
 .settings-title {
-    color: rgb(216, 215, 215);
     font-size: large;
     font-weight: bolder;
 }

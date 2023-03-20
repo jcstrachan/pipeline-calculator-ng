@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { EChartsOption } from 'echarts';
 
 @Component({
   selector: 'app-data-visualisation',
@@ -7,6 +6,10 @@ import { EChartsOption } from 'echarts';
   styleUrls: ['./data-visualisation.component.css']
 })
 export class DataVisualisationComponent {
+
+  data: number[][] = this.generateData();
+  xAxisName: string = 'Length of buoyancysection (m)'
+  yAxisNames: string[] = ['Max/min elevation (m)', 'Max abs. bending moment (N*m)', 'Max shear force (N)', 'Max axial tension (N)']
 
   private func(x: number) {
     return -Math.cos(0.03*x) * 20;
@@ -20,43 +23,4 @@ export class DataVisualisationComponent {
     return data;
   }
 
-  chartOption: EChartsOption = {
-    animation: false,
-    grid: {
-      top: 40,
-      left: 50,
-      right: 40,
-      bottom: 50
-    },
-    xAxis: {
-      name: 'x',
-      min: -100,
-      max: 100,
-      minorTick: {
-        show: true
-      },
-      minorSplitLine: {
-        show: true
-      }
-    },
-    yAxis: {
-      name: 'y',
-      min: -100,
-      max: 100,
-      minorTick: {
-        show: true
-      },
-      minorSplitLine: {
-        show: true
-      }
-    },
-    series: [
-      {
-        type: 'line',
-        showSymbol: false,
-        clip: true,
-        data: this.generateData()
-      }
-    ]
-  };
 }

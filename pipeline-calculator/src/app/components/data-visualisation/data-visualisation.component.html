@@ -1,1 +1,9 @@
-<div echarts [options]="chartOption" class="chart pipeline-elevation"></div>
+<ng-container *ngIf="this.yAxisNames">
+    <div class="charts" *ngFor="let yAxisName of this.yAxisNames">
+        <app-chart
+            [data]="this.data" 
+            [xAxisName]="this.xAxisName"
+            [yAxisName]="yAxisName">
+        </app-chart>
+    </div>
+</ng-container>
