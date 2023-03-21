@@ -9,7 +9,7 @@ import { EChartsOption } from 'echarts';
 export class ChartComponent {
 
   @Input() data: number[][] = [];
-  @Input() xAxisName: string = '';
+  @Input() xAxisName: string = 'Length of buoyancysection (m)';
   @Input() yAxisName: string = '';
   
   chartOption: EChartsOption = {
@@ -30,7 +30,11 @@ export class ChartComponent {
       minorSplitLine: {
         show: false
       },
-      nameLocation: 'middle'
+      nameLocation: 'middle',
+      nameGap: 25,
+      nameTextStyle: {
+        color: '#333333'
+      }
     },
     yAxis: {
       name: this.yAxisName,
@@ -42,7 +46,11 @@ export class ChartComponent {
       minorSplitLine: {
         show: false
       },
-      nameLocation: 'middle'
+      nameLocation: 'middle',
+      nameGap: 25,
+      nameTextStyle: {
+        color: '#333333'
+      }
     },
     series: [
       {
