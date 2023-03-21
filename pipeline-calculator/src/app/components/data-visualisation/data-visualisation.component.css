@@ -1,4 +1,3 @@
 .charts {
-    display: flex;
-    flex-direction: row;
+    width: 25%;
 }

@@ -1,4 +1,4 @@
-<ng-container *ngIf="this.yAxisNames">
+<div *ngIf="this.yAxisNames" style="display: flex; flex-direction: row;">
     <div class="charts" *ngFor="let yAxisName of this.yAxisNames">
         <app-chart
             [data]="this.data" 
@@ -6,4 +6,4 @@
             [yAxisName]="yAxisName">
         </app-chart>
     </div>
-</ng-container>
+</div>
