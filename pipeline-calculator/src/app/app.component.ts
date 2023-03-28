@@ -14,24 +14,32 @@ export class AppComponent {
 
   public updateParameters(event: IPipelineParameters) {
     this.parameters = event;
-    this.beginCalculations();
+    for (let i = 0; i < 110; i++) {
+      this.calculatePipeline(i);
+    }
   }
 
-  private beginCalculations() {
+  private calculatePipeline(buoyancyLength: number) {
     // Initialising the required variable
     // x and z are arrays of node positions in the x and z axis respectively
     // w_g = Pipeline Immersed Gravity, A = Pipeline Cross-section Area
+    var pipeline: IPipeline;
     var x: number[] = [];
     var z: number[] = [];
     const A: number = Math.PI * (Math.pow(this.parameters.pipelineOuterDiameter/2, 2) - (Math.pow(this.parameters.pipelineOuterDiameter/2 - this.parameters.pipelineWallThickness, 2)));
     const w_g: number = (this.parameters.pipelineDensity - this.parameters.seawaterDensity) * 9.81 * A;
 
+    // deltaS = is the length of each finite difference subinterval
+    let deltaS: number = this.parameters.spanLength / this.parameters.finiteDifferenceSubintervalAmount;
+
     // The first step to the calculations is to get the xz coordinates
-    [x, z] = this.calculateXZ(this.parameters, w_g);
+    [x, z] = this.calculateXZ(this.parameters, w_g, deltaS);
 
     // Next we back-calculate the forces acting on the pipeline
+    const bendingMoments: number[] = this.getBendingMoments([], deltaS);
+    const shearForces: number[] = this.getShearForces(bendingMoments, deltaS);
 
-
+    //return pipeline;
   }
 
   private getThetaValue(s:number): number {
@@ -39,40 +47,36 @@ export class AppComponent {
     return thetaValue;
   }
 
-  private calculateXZ(parameters: IPipelineParameters, w_g: number): Array<Array<number>> {
+  private calculateXZ(parameters: IPipelineParameters, w_g: number, deltaS: number): Array<Array<number>> {
     // Initialising the required variables
     // x and y coordinate values
     let xVals: number[] = [];
     let zVals: number[] = [];
-    // deltaS = is the length of each finite difference subinterval
-    let deltaS: number = this.parameters.spanLength / this.parameters.finiteDifferenceSubintervalAmount;
+    
     let embedment: number = w_g / parameters.seafloorStiffness;
 
-    // We will first calculate the x coordinate across the arc-length 's' of the pipeline using equation 15
-    let currentInterval: number = deltaS;
-    for (let i = 0; i < parameters.finiteDifferenceSubintervalAmount; i++) {
-      let totalValue: number = 0;
-      for (let j = 0; j < i - 1; j++) {
-        totalValue += Math.cos(this.getThetaValue(currentInterval));
-        currentInterval += deltaS;
-      }
-      xVals.push(totalValue);
-    }
-
-    // Next we can calculate the z coordinate using equation 16
-    currentInterval = deltaS;
-    for (let i = 0; i < parameters.finiteDifferenceSubintervalAmount; i++) {
-      let totalValue = 0;
-      for (let j = 0; j < i - 1; j++) {
-        totalValue += Math.sin(this.getThetaValue(currentInterval));
-        currentInterval += deltaS;
-      }
-      totalValue += embedment;
-      zVals.push(totalValue);
-    } 
-
-    // We can now return the x and z values
     return [xVals, zVals];
+  }
+
+  private getBendingMoments(thetaValues: number[], deltaS: number): number[] {
+    // E = Pipeline's elasticity modulus, I = Pipeline's moment of inertia
+    var E = this.parameters.pipelineElasticityModulus;
+    var I = Math.PI / (4 * ((this.parameters.pipelineOuterDiameter/2)^4 - (this.parameters.pipelineOuterDiameter/2 - this.parameters.pipelineWallThickness)^4));
+    var bendingMoments: number[] = [];
+    for (let i = 1; i < thetaValues.length; i++) {
+      let M = E * I * ((thetaValues[i] - thetaValues[i-1])/deltaS);
+      bendingMoments.push(M);
+    }
+    return bendingMoments;
+  }
+
+  private getShearForces(bendingMoments: number[], deltaS: number): number[] {
+    var shearForces: number[] = [];
+    for (let i = 1; i < bendingMoments.length; i++) {
+      let S = (bendingMoments[i] - bendingMoments[i-1]) / deltaS;
+      shearForces.push(S);
+    }
+    return shearForces;
   }
 
   // Takes an array of IPipeline and returns the most optimal 
