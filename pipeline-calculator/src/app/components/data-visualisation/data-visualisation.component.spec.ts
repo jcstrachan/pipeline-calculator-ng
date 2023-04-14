@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { DataVisualisationComponent } from './data-visualisation.component';
 
 describe('DataVisualisationComponent', () => {

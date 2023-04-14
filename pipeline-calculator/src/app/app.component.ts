@@ -79,7 +79,11 @@ export class AppComponent {
     return shearForces;
   }
 
-  // Takes an array of IPipeline and returns the most optimal 
+  private getAxialTension() {
+
+  }
+
+  // Takes an array of IPipeline and returns the most optimal buoyancy section length
   private findOptimalLength(pipelines: IPipeline[]): number { 
     return 0;
   }

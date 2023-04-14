@@ -12,6 +12,7 @@ import { DataVisualisationComponent } from './components/data-visualisation/data
 import { NgxEchartsModule } from 'ngx-echarts';
 import { SettingsComponent } from './components/settings/settings.component';
 import { ChartComponent } from './components/data-visualisation/chart/chart.component';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { ChartComponent } from './components/data-visualisation/chart/chart.comp
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts'),
     }),
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]
