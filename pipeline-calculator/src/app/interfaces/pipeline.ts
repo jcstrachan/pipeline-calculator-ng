@@ -1,6 +1,6 @@
 export interface IPipeline {
     buoyancySectionLength: number;
-    elevationValues: number[];
+    coordinates: number[][];
     bendingMoments: number[];
     shearForces: number[];
     axialTensionForces: number[];

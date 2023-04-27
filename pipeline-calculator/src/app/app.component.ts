@@ -11,7 +11,7 @@ import { IPipeline } from './interfaces/pipeline';
 export class AppComponent {
   title = 'PBMC';
   private parameters!: IPipelineParameters;
-  public pipelineResults!: IPipeline[];
+  public pipelineResults: IPipeline[] = [];
 
   public updateParameters(event: IPipelineParameters) {
     this.parameters = event;
@@ -33,7 +33,7 @@ export class AppComponent {
     for (let l = 40; l <= 80; l++) {
       // The first step to the calculations is to get the theta values and z coordinates
       const thetaValues = this.getThetaValues(deltaS, l);
-      let zVals: number[] = this.calculateZ(w_g, deltaS, l);
+      let xzVals: number[][] = this.calculateXZ(w_g, deltaS, l);
 
       // Next we back-calculate the forces acting on the pipeline
       const bendingMoments: number[] = this.getBendingMoments(thetaValues, deltaS);
@@ -41,7 +41,7 @@ export class AppComponent {
 
       let pipeline: IPipeline = {
         buoyancySectionLength: l,
-        elevationValues: zVals,
+        coordinates: xzVals,
         bendingMoments: bendingMoments,
         shearForces: shearForces,
         axialTensionForces: [],
@@ -82,20 +82,20 @@ export class AppComponent {
     return thetaValues;
   }
 
-  private calculateZ(w_g: number, deltaS: number, l: number): number[] {
+  private calculateXZ(w_g: number, deltaS: number, l: number): number[][] {
     // Initialising required variables
     const a = -1.6 + (l - 40)/10;
-    let zVals: number[] = [];
+    let xzVals: number[][] = [];
     let x = 0;
     
     while (x <= this.parameters.spanLength) {
       // We calculate the z value at the current x and push it to the array
-      zVals.push(a * Math.exp(-((0.5 * (x - 6))**2)) - 0.4 * Math.exp(-((0.3 * (x - 6))**4)));
+      xzVals.push([x, a * Math.exp(-((0.5 * (x - 6))**2)) - 0.4 * Math.exp(-((0.3 * (x - 6))**4))]);
       // Then we increment the x value
       x += deltaS;
     }
 
-    return zVals;
+    return xzVals;
   }
 
   private getBendingMoments(thetaValues: number[], deltaS: number): number[] {
@@ -132,7 +132,11 @@ export class AppComponent {
   // Takes an IPipeline object as input and returns an array of its max forces
   private findMaxForces(pipeline: IPipeline): number[] {
     // Defining all the max forces
-    let minElevationGap: number = Math.max(...pipeline.elevationValues) - Math.min(...pipeline.elevationValues);
+    let zVals: number[] = [];
+    for (let i = 0; i < pipeline.coordinates.length; i++) {
+      zVals.push(pipeline.coordinates[i][1]);
+    }
+    let minElevationGap: number = Math.max(...zVals) - Math.min(...zVals);
     let minBendingDifference: number = Math.max(...pipeline.bendingMoments) - Math.abs(Math.min(...pipeline.bendingMoments));
     let maxShearForce: number = Math.max(...pipeline.shearForces);
     let maxAxialTension: number = Math.max(...pipeline.axialTensionForces);

@@ -1,5 +1,4 @@
 export interface IPipelineParameters {
-    pipelineArcLength: number;
     finiteDifferenceSubintervalAmount: number;
     pipelineOuterDiameter: number;
     pipelineWallThickness: number;

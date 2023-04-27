@@ -63,6 +63,7 @@ export class ChartComponent {
         {
           type: 'line',
           showSymbol: false,
+          smooth: true,
           clip: true,
           data: this.data
         }

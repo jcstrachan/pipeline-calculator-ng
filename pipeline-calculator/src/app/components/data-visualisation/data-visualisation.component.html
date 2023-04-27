@@ -2,19 +2,19 @@
 <div class="visualisation_selector">
   <mat-form-field appearance="fill">
     <mat-label>Buoyancy Length</mat-label>
-      <mat-select>
-        <mat-option *ngFor="let pipeline of pipelines" [value]="pipeline.buoyancySectionLength">
-          {{pipeline.buoyancySectionLength}}m
+      <mat-select [(ngModel)]="selectedOption" (selectionChange)="onSelectionChange($event)">
+        <mat-option *ngFor="let option of options" [value]="option.value">
+          {{option.label}}
         </mat-option>
       </mat-select>
   </mat-form-field>
 </div>
 
-<div *ngIf="!this.yAxisNames">
+<div *ngIf="!this.data">
   <h2>*Submit parameters to display graphs*</h2>
 </div>
 
-<div *ngIf="this.yAxisNames" style="display: flex; flex-direction: row; margin-top: -15px;">
+<div *ngIf="this.data" style="display: flex; flex-direction: row; margin-top: -15px;">
     <div class="charts" *ngFor="let yAxisName of this.yAxisNames">
         <app-chart
             [data]="this.data" 
