@@ -14,7 +14,9 @@
       </div>
       </div>
       <div class="container data-vis">
-        <app-data-visualisation></app-data-visualisation>
+        <app-data-visualisation
+          [pipelines]="this.pipelineResults"
+        ></app-data-visualisation>
       </div>
   </div>
   <div class="container  settings">

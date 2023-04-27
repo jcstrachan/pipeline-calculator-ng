@@ -27,7 +27,6 @@ export class ParameterInputComponent {
   });
 
   onSubmit() {
-    console.warn(this.parametersForm.value);
     var parameters: IPipelineParameters = {
       pipelineArcLength: this.parametersForm.value.pipelineArcLength || 0,
       finiteDifferenceSubintervalAmount: this.parametersForm.value.finiteDifferenceSubintervalAmount || 0,

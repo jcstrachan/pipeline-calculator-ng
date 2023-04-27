@@ -1,0 +1,4 @@
+.visualisation_selector {
+    display: flex;
+    flex-direction: row;
+}

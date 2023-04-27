@@ -11,51 +11,91 @@ import { IPipeline } from './interfaces/pipeline';
 export class AppComponent {
   title = 'PBMC';
   private parameters!: IPipelineParameters;
+  public pipelineResults!: IPipeline[];
 
   public updateParameters(event: IPipelineParameters) {
     this.parameters = event;
-    for (let i = 0; i < 110; i++) {
-      this.calculatePipeline(i);
-    }
+    this.pipelineResults = this.calculatePipelines();
   }
 
-  private calculatePipeline(buoyancyLength: number) {
+  private calculatePipelines(): IPipeline[] {
     // Initialising the required variable
     // x and z are arrays of node positions in the x and z axis respectively
     // w_g = Pipeline Immersed Gravity, A = Pipeline Cross-section Area
-    var pipeline: IPipeline;
-    var x: number[] = [];
-    var z: number[] = [];
+    let pipelines: IPipeline[] = [];
     const A: number = Math.PI * (Math.pow(this.parameters.pipelineOuterDiameter/2, 2) - (Math.pow(this.parameters.pipelineOuterDiameter/2 - this.parameters.pipelineWallThickness, 2)));
     const w_g: number = (this.parameters.pipelineDensity - this.parameters.seawaterDensity) * 9.81 * A;
 
     // deltaS = is the length of each finite difference subinterval
     let deltaS: number = this.parameters.spanLength / this.parameters.finiteDifferenceSubintervalAmount;
 
-    // The first step to the calculations is to get the xz coordinates
-    [x, z] = this.calculateXZ(this.parameters, w_g, deltaS);
-
-    // Next we back-calculate the forces acting on the pipeline
-    const bendingMoments: number[] = this.getBendingMoments([], deltaS);
-    const shearForces: number[] = this.getShearForces(bendingMoments, deltaS);
-
-    //return pipeline;
-  }
-
-  private getThetaValue(s:number): number {
-    let thetaValue: number = 0;
-    return thetaValue;
-  }
-
-  private calculateXZ(parameters: IPipelineParameters, w_g: number, deltaS: number): Array<Array<number>> {
-    // Initialising the required variables
-    // x and y coordinate values
-    let xVals: number[] = [];
-    let zVals: number[] = [];
     
-    let embedment: number = w_g / parameters.seafloorStiffness;
+    for (let l = 40; l <= 80; l++) {
+      // The first step to the calculations is to get the theta values and z coordinates
+      const thetaValues = this.getThetaValues(deltaS, l);
+      let zVals: number[] = this.calculateZ(w_g, deltaS, l);
 
-    return [xVals, zVals];
+      // Next we back-calculate the forces acting on the pipeline
+      const bendingMoments: number[] = this.getBendingMoments(thetaValues, deltaS);
+      const shearForces: number[] = this.getShearForces(bendingMoments, deltaS);
+
+      let pipeline: IPipeline = {
+        buoyancySectionLength: l,
+        elevationValues: zVals,
+        bendingMoments: bendingMoments,
+        shearForces: shearForces,
+        axialTensionForces: [],
+        supportReactions: [],
+      }
+      pipelines.push(pipeline);
+    }
+
+    return pipelines;
+
+  }
+
+  // Function to generate a curve to represent a possible pipeline
+  // Note that this curve is an estimation as discussed in the report and user manual
+  private getThetaValues(deltaS: number, l: number): number[] {
+    // First we need to define our 'a' value to determine the amplitude
+    const a = -1.6 + (l - 40)/10;
+    const thetaValues: number[] = []
+
+    let x = 0;
+    let slope, angle;
+
+    while (x <= this.parameters.spanLength) {
+      // First step is to calculate the slope at the current x 
+      slope = -a * 0.5 * (x-3) * Math.exp(-((0.5 * (x-3))**2)) + 1.2 * 0.4 * ((0.3 * (x - 3)) ** 3) * Math.exp(-((0.3 * (x-3))**4));
+
+      // Next we can calculate the angle between the curve and the x-axis, taking into account if it is negative
+      angle = Math.atan(slope);
+      if (slope < 0) {
+        angle += Math.PI;
+      }
+
+      // Finally, we add it to the array of theta angles and increment our x value
+      thetaValues.push(angle);
+      x += deltaS;
+    }
+    
+    return thetaValues;
+  }
+
+  private calculateZ(w_g: number, deltaS: number, l: number): number[] {
+    // Initialising required variables
+    const a = -1.6 + (l - 40)/10;
+    let zVals: number[] = [];
+    let x = 0;
+    
+    while (x <= this.parameters.spanLength) {
+      // We calculate the z value at the current x and push it to the array
+      zVals.push(a * Math.exp(-((0.5 * (x - 6))**2)) - 0.4 * Math.exp(-((0.3 * (x - 6))**4)));
+      // Then we increment the x value
+      x += deltaS;
+    }
+
+    return zVals;
   }
 
   private getBendingMoments(thetaValues: number[], deltaS: number): number[] {
@@ -79,13 +119,13 @@ export class AppComponent {
     return shearForces;
   }
 
-  private getAxialTension() {
-
-  }
-
-  // Takes an array of IPipeline and returns the most optimal buoyancy section length
-  private findOptimalLength(pipelines: IPipeline[]): number { 
-    return 0;
+  private getAxialTension(thetaValues: number[]) {
+    // Calculate the axial tension at each interval
+    var axialTensions: number[] = [];
+    for (let i = 1; i < (this.parameters.spanLength/this.parameters.finiteDifferenceSubintervalAmount); i++) {
+      // First step is to calculate the sum of the node seafloor support reactions minus 
+      this.parameters.effectiveAxialTension * Math.cos(thetaValues[i])
+    }
   }
 
 

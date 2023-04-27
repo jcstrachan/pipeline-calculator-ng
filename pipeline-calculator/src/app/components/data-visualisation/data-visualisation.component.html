@@ -1,14 +1,20 @@
-<h4>Select Pipeline:</h4>
-<mat-form-field appearance="fill">
-    <mat-label>Favorite food</mat-label>
-    <mat-select>
-      <mat-option *ngFor="let food of foods" [value]="food.value">
-        {{food.viewValue}}
-      </mat-option>
-    </mat-select>
+<h2>Data Visualisation:</h2>
+<div class="visualisation_selector">
+  <mat-form-field appearance="fill">
+    <mat-label>Buoyancy Length</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let pipeline of pipelines" [value]="pipeline.buoyancySectionLength">
+          {{pipeline.buoyancySectionLength}}m
+        </mat-option>
+      </mat-select>
   </mat-form-field>
+</div>
 
-<div *ngIf="this.yAxisNames" style="display: flex; flex-direction: row;">
+<div *ngIf="!this.yAxisNames">
+  <h2>*Submit parameters to display graphs*</h2>
+</div>
+
+<div *ngIf="this.yAxisNames" style="display: flex; flex-direction: row; margin-top: -15px;">
     <div class="charts" *ngFor="let yAxisName of this.yAxisNames">
         <app-chart
             [data]="this.data" 

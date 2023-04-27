@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatSelectModule } from '@angular/material/select';
+import { IPipeline } from 'src/app/interfaces/pipeline';
 
 interface Food {
   value: string;
@@ -12,6 +13,8 @@ interface Food {
   styleUrls: ['./data-visualisation.component.css']
 })
 export class DataVisualisationComponent {
+
+  @Input() pipelines: IPipeline[] = [];
 
   data: number[][] = this.generateData();
   xAxisName: string = 'Length of buoyancysection (m)'
@@ -28,11 +31,5 @@ export class DataVisualisationComponent {
     }
     return data;
   }
-
-  foods: Food[] = [
-    {value: 'steak-0', viewValue: 'Steak'},
-    {value: 'pizza-1', viewValue: 'Pizza'},
-    {value: 'tacos-2', viewValue: 'Tacos'},
-  ];
 
 }
