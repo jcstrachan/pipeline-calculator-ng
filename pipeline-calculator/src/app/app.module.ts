@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { ParameterInputComponent } from './components/parameter-input/parameter-input.component';
 import { ExportSettingsComponent } from './components/export-settings/export-settings.component';
 
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { DataVisualisationComponent } from './components/data-visualisation/data-visualisation.component';
@@ -31,7 +31,8 @@ import { MatSelectModule } from '@angular/material/select';
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts'),
     }),
-    MatSelectModule
+    MatSelectModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
