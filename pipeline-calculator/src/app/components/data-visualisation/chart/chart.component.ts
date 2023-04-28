@@ -9,16 +9,18 @@ import { EChartsOption } from 'echarts';
 export class ChartComponent {
 
   @Input() data: number[][] = [];
-  @Input() xAxisName: string = 'Length of buoyancysection (m)';
   @Input() yAxisName: string = '';
+  @Input() yLimits: number[] = [];
+  xAxisName: string = 'Length of buoyancysection (m)';
 
   chartOption: EChartsOption = {};
   
   ngOnChanges(changes: SimpleChanges) {
-      this.updateChart()
+    console.log("New data: ", changes['data'].currentValue)
+    this.updateChart(changes['data'].currentValue);
   }
 
-  private updateChart() {
+  private updateChart(newData: any) {
     this.chartOption = {
       animation: false,
       grid: {
@@ -45,8 +47,8 @@ export class ChartComponent {
       },
       yAxis: {
         name: this.yAxisName,
-        min: -15,
-        max: 15,
+        min: this.yLimits[0],
+        max: this.yLimits[1],
         minorTick: {
           show: true
         },
@@ -65,7 +67,7 @@ export class ChartComponent {
           showSymbol: false,
           smooth: true,
           clip: true,
-          data: this.data
+          data: newData
         }
       ]
     };

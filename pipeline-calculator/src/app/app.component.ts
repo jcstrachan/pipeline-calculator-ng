@@ -12,6 +12,7 @@ export class AppComponent {
   title = 'PBMC';
   private parameters!: IPipelineParameters;
   public pipelineResults: IPipeline[] = [];
+  public deltaS!: number;
 
   public updateParameters(event: IPipelineParameters) {
     this.parameters = event;
@@ -27,17 +28,17 @@ export class AppComponent {
     const w_g: number = (this.parameters.pipelineDensity - this.parameters.seawaterDensity) * 9.81 * A;
 
     // deltaS = is the length of each finite difference subinterval
-    let deltaS: number = this.parameters.spanLength / this.parameters.finiteDifferenceSubintervalAmount;
+    this.deltaS = this.parameters.spanLength / this.parameters.finiteDifferenceSubintervalAmount;
 
     
     for (let l = 40; l <= 80; l++) {
       // The first step to the calculations is to get the theta values and z coordinates
-      const thetaValues = this.getThetaValues(deltaS, l);
-      let xzVals: number[][] = this.calculateXZ(w_g, deltaS, l);
+      const thetaValues = this.getThetaValues(this.deltaS, l);
+      let xzVals: number[][] = this.calculateXZ(w_g, this.deltaS, l);
 
       // Next we back-calculate the forces acting on the pipeline
-      const bendingMoments: number[] = this.getBendingMoments(thetaValues, deltaS);
-      const shearForces: number[] = this.getShearForces(bendingMoments, deltaS);
+      const bendingMoments: number[] = this.getBendingMoments(thetaValues, this.deltaS);
+      const shearForces: number[] = this.getShearForces(bendingMoments, this.deltaS);
 
       let pipeline: IPipeline = {
         buoyancySectionLength: l,
@@ -90,7 +91,7 @@ export class AppComponent {
     
     while (x <= this.parameters.spanLength) {
       // We calculate the z value at the current x and push it to the array
-      xzVals.push([x, a * Math.exp(-((0.5 * (x - 6))**2)) - 0.4 * Math.exp(-((0.3 * (x - 6))**4))]);
+      xzVals.push([x * 8.3, (a * Math.exp(-((0.5 * (x - 6))**2)) - 0.4 * Math.exp(-((0.3 * (x - 6))**4))) * 2]);
       // Then we increment the x value
       x += deltaS;
     }
