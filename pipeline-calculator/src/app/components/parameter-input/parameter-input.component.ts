@@ -12,17 +12,17 @@ export class ParameterInputComponent {
   @Output() parameterEmitter = new EventEmitter();
 
   public parametersForm = new FormGroup({
-    finiteDifferenceSubintervalAmount: new FormControl<number>(800, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
-    pipelineOuterDiameter: new FormControl<number>(1.22, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
-    pipelineWallThickness: new FormControl<number>(0.0318, {nonNullable: true, validators: [Validators.required, Validators.min(0)]}),
-    pipelineElasticityModulus: new FormControl<number>(210000000000, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
-    pipelineDensity: new FormControl<number>(7850, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
-    seawaterDensity: new FormControl<number>(1030, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
-    spanLength: new FormControl<number>(200, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
-    elevationGap: new FormControl<number>(0, {nonNullable: true, validators: [Validators.required]}),
-    spanShoulderLength: new FormControl<number>(100, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
-    effectiveAxialTension: new FormControl<number>(0, {nonNullable: true, validators: [Validators.required]}),
-    seafloorStiffness: new FormControl<number>(4000, {nonNullable: true, validators: [Validators.required, Validators.min(1)]})
+    finiteDifferenceSubintervalAmount: new FormControl<number>(800, {validators: [Validators.required, Validators.min(1)]}),
+    pipelineOuterDiameter: new FormControl<number>(1.22, {validators: [Validators.required, Validators.min(1)]}),
+    pipelineWallThickness: new FormControl<number>(0.0318, {validators: [Validators.required, Validators.min(0)]}),
+    pipelineElasticityModulus: new FormControl<number>(210000000000, {validators: [Validators.required, Validators.min(1)]}),
+    pipelineDensity: new FormControl<number>(7850, {validators: [Validators.required, Validators.min(1)]}),
+    seawaterDensity: new FormControl<number>(1030, {validators: [Validators.required, Validators.min(1)]}),
+    spanLength: new FormControl<number>(200, {validators: [Validators.required, Validators.min(1)]}),
+    elevationGap: new FormControl<number>(0, {validators: [Validators.required]}),
+    spanShoulderLength: new FormControl<number>(100, {validators: [Validators.required, Validators.min(1)]}),
+    effectiveAxialTension: new FormControl<number>(0, {validators: [Validators.required]}),
+    seafloorStiffness: new FormControl<number>(4000, {validators: [Validators.required, Validators.min(1)]})
   });
 
   onSubmit() {

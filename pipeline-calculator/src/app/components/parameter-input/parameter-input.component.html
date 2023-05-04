@@ -18,7 +18,7 @@
     
         </div>
         <div class="parent">
-            <div class="child"><input id="finite-difference-subinteval-amount" type="number" formControlName="finiteDifferenceSubintervalAmount" required="True"></div>
+            <div class="child"><input id="finite-difference-subinteval-amount" type="number" formControlName="finiteDifferenceSubintervalAmount"></div>
             <div class="child"><input id="pipeline-outer-diameter" type="number" formControlName="pipelineOuterDiameter"></div>
             <div class="child"><input id="pipeline-wall-thickness" type="number" formControlName="pipelineWallThickness"></div>
             <div class="child"><input id="pipeline-elasticity-modulus" type="number" formControlName="pipelineElasticityModulus"></div>
@@ -34,3 +34,6 @@
     </form>
     <button class="submit" mat-raised-button [disabled]="!parametersForm.valid" type="submit" (click)="onSubmit()">Submit Parameters</button>
 </div>
+
+
+

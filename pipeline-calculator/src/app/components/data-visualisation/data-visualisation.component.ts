@@ -39,25 +39,23 @@ export class DataVisualisationComponent implements OnChanges {
   selectedOption!: string;
   data: number[][][] = [];
 
-  @Input() _pipelines: IPipeline[] = [];
+  private _pipelines: IPipeline[] = [];
+  @Input() public set pipelines(value: IPipeline[]) {
+    this._pipelines = value;
+  }
   public get pipelines(): IPipeline[] {
     return this._pipelines;
-  }
-  public set pipelines(value: IPipeline[]) {
-    this._pipelines = value;
   }
   @Input() deltaS: number = 1;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['_pipelines']) {
-      console.log("Parameters updated!");
       this._pipelines = changes['_pipelines'].currentValue;
       this.updateData(parseInt(this.selectedOption, 10));
     }
   }
 
   public onSelectionChange(event: MatSelectChange): void {
-    console.log('Selected option: ', event.value);
     this.selectedOption = event.value;
     this.updateData(parseInt(event.value, 10));
   }
@@ -65,12 +63,8 @@ export class DataVisualisationComponent implements OnChanges {
   // Update the data variable
   private updateData(l: number) {
 
-    console.log("Updating data...")
-
     //First we need to find the pipeline we want the data from
     const pipe = this.pipelines.find(item => item.buoyancySectionLength === l);
-
-    console.log("Found pipe: ", pipe)
 
     // Next we assign the coordinates to the first index of the array
     if (pipe) {
@@ -79,8 +73,6 @@ export class DataVisualisationComponent implements OnChanges {
       this.data[2] = this.genCoords(pipe.shearForces);
       this.data[3] = this.genCoords(pipe.axialTensionForces);
     }
-
-    console.log("Data: ", this.data)
     
   }
 
@@ -94,6 +86,15 @@ export class DataVisualisationComponent implements OnChanges {
     }
 
     return xyVals;
+  }
+
+  public collectChartData() {
+    // First we need to collect the data for each length of buoyancy section.
+    // We will collect data for 40m, 50m, 60m, 70m and 80m
+    for (let length in [40, 50, 60, 70, 80]) {
+      
+    }
+    console.log('Child function called!');
   }
   
 

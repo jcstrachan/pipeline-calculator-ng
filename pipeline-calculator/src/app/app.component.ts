@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild  } from '@angular/core';
 import { IPipelineParameters } from './interfaces/pipeline-parameters';
 import * as numeric from 'numeric';
 import { IPipeline } from './interfaces/pipeline';
+import { DataVisualisationComponent } from './components/data-visualisation/data-visualisation.component';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,7 @@ import { IPipeline } from './interfaces/pipeline';
 })
 export class AppComponent {
   title = 'PBMC';
-  private parameters!: IPipelineParameters;
+  public parameters!: IPipelineParameters;
   public pipelineResults: IPipeline[] = [];
   public deltaS!: number;
 
@@ -19,7 +20,7 @@ export class AppComponent {
     this.pipelineResults = this.calculatePipelines();
   }
 
-  private calculatePipelines(): IPipeline[] {
+  public calculatePipelines(): IPipeline[] {
     // Initialising the required variable
     // x and z are arrays of node positions in the x and z axis respectively
     // w_g = Pipeline Immersed Gravity, A = Pipeline Cross-section Area
@@ -57,7 +58,7 @@ export class AppComponent {
 
   // Function to generate a curve to represent a possible pipeline
   // Note that this curve is an estimation as discussed in the report and user manual
-  private getThetaValues(deltaS: number, l: number): number[] {
+  public getThetaValues(deltaS: number, l: number): number[] {
     // First we need to define our 'a' value to determine the amplitude
     const a = -1.6 + (l - 40)/10;
     const thetaValues: number[] = []
@@ -83,7 +84,7 @@ export class AppComponent {
     return thetaValues;
   }
 
-  private calculateXZ(w_g: number, deltaS: number, l: number): number[][] {
+  public calculateXZ(w_g: number, deltaS: number, l: number): number[][] {
     // Initialising required variables
     const a = -1.6 + (l - 40)/10;
     let xzVals: number[][] = [];
@@ -99,7 +100,7 @@ export class AppComponent {
     return xzVals;
   }
 
-  private getBendingMoments(thetaValues: number[], deltaS: number): number[] {
+  public getBendingMoments(thetaValues: number[], deltaS: number): number[] {
     // E = Pipeline's elasticity modulus, I = Pipeline's moment of inertia
     var E = this.parameters.pipelineElasticityModulus;
     var I = Math.PI / (4 * ((this.parameters.pipelineOuterDiameter/2)^4 - (this.parameters.pipelineOuterDiameter/2 - this.parameters.pipelineWallThickness)^4));
@@ -111,16 +112,16 @@ export class AppComponent {
     return bendingMoments;
   }
 
-  private getShearForces(bendingMoments: number[], deltaS: number): number[] {
+  public getShearForces(bendingMoments: number[], deltaS: number): number[] {
     var shearForces: number[] = [];
     for (let i = 1; i < bendingMoments.length; i++) {
-      let S = (bendingMoments[i] - bendingMoments[i-1]) / deltaS;
+      let S = -(bendingMoments[i] - bendingMoments[i-1]) / deltaS;
       shearForces.push(S);
     }
     return shearForces;
   }
 
-  private getAxialTension(thetaValues: number[]) {
+  public getAxialTension(thetaValues: number[]) {
     // Calculate the axial tension at each interval
     var axialTensions: number[] = [];
     for (let i = 1; i < (this.parameters.spanLength/this.parameters.finiteDifferenceSubintervalAmount); i++) {
@@ -131,7 +132,7 @@ export class AppComponent {
 
 
   // Takes an IPipeline object as input and returns an array of its max forces
-  private findMaxForces(pipeline: IPipeline): number[] {
+  public findMaxForces(pipeline: IPipeline): number[] {
     // Defining all the max forces
     let zVals: number[] = [];
     for (let i = 0; i < pipeline.coordinates.length; i++) {
@@ -144,6 +145,14 @@ export class AppComponent {
 
     // Returning max forces in an array
     return [minElevationGap, minBendingDifference, maxShearForce, maxAxialTension];
+  }
+
+  @ViewChild(DataVisualisationComponent, {static: false}) dataComponent!: DataVisualisationComponent;
+
+  public exportData(event: Event) {
+    if (event) {
+      this.dataComponent.collectChartData();
+    }
   }
 
 

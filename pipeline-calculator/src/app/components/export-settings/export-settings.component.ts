@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-export-settings',
@@ -9,7 +9,13 @@ export class ExportSettingsComponent implements OnInit {
 
   constructor() { }
 
+  @Output() exportEmitter = new EventEmitter;
+
   ngOnInit(): void {
+  }
+
+  public exportData() {
+    this.exportEmitter.emit(true);
   }
 
 }
