@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChange, SimpleChanges } from '@angular/core';
-import { EChartsOption } from 'echarts';
+import * as echarts from 'echarts';
 
 @Component({
   selector: 'app-chart',
@@ -13,10 +13,9 @@ export class ChartComponent {
   @Input() yLimits: number[] = [];
   xAxisName: string = 'Length of buoyancysection (m)';
 
-  chartOption: EChartsOption = {};
+  chartOption: echarts.EChartsOption = {};
   
   ngOnChanges(changes: SimpleChanges) {
-    console.log("New data: ", changes['data'].currentValue)
     this.updateChart(changes['data'].currentValue);
   }
 
@@ -71,6 +70,25 @@ export class ChartComponent {
         }
       ]
     };
+
+  }
+
+  public getURL(): string {
+    console.log("Getting chart for yaxis: ", this.yAxisName);
+
+    const chartElement = document.getElementById('chart') as HTMLElement;
+    const chart = echarts.init(chartElement);
+    var dataURL: string = '';
+
+    chart.on('finished', () => {
+      dataURL = chart.getDataURL({ type: 'png', pixelRatio: 2});
+      console.log(dataURL);
+    });
+
+    chart.setOption(this.chartOption);
+
+    
+    return dataURL;
   }
   
 }

@@ -1,6 +1,8 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
+import { IExportData } from 'src/app/interfaces/export-data';
 import { IPipeline } from 'src/app/interfaces/pipeline';
+import { ChartComponent } from './chart/chart.component';
 
 interface Food {
   value: string;
@@ -61,24 +63,30 @@ export class DataVisualisationComponent implements OnChanges {
   }
 
   // Update the data variable
-  private updateData(l: number) {
+  private updateData(l: number): Promise<void> {
 
-    //First we need to find the pipeline we want the data from
-    const pipe = this.pipelines.find(item => item.buoyancySectionLength === l);
+    return new Promise<void>((resolve) => {
 
-    // Next we assign the coordinates to the first index of the array
-    if (pipe) {
-      this.data[0] = pipe.coordinates;
-      this.data[1] = this.genCoords(pipe.bendingMoments);
-      this.data[2] = this.genCoords(pipe.shearForces);
-      this.data[3] = this.genCoords(pipe.axialTensionForces);
-    }
+      //First we need to find the pipeline we want the data from
+      const pipe = this.pipelines.find(item => item.buoyancySectionLength === l);
+
+      // Next we assign the coordinates to the first index of the array
+      if (pipe) {
+        this.data[0] = pipe.coordinates;
+        this.data[1] = this.genCoords(pipe.bendingMoments);
+        this.data[2] = this.genCoords(pipe.shearForces);
+        this.data[3] = this.genCoords(pipe.axialTensionForces);
+      }
+
+      resolve();
+
+    })
     
   }
 
   private genCoords(yVals: number[]): number[][] {
     let xyVals: number[][] = [];
-    let x = 0
+    let x = 0;
 
     for (let yVal of yVals) {
       xyVals.push([x*18.5, yVal*0.0000000000035]);
@@ -88,14 +96,26 @@ export class DataVisualisationComponent implements OnChanges {
     return xyVals;
   }
 
-  public collectChartData() {
+  @ViewChild(ChartComponent, {static: false}) chartComponent!: ChartComponent;
+
+  public async getURLs(): Promise<string[]> {
     // First we need to collect the data for each length of buoyancy section.
     // We will collect data for 40m, 50m, 60m, 70m and 80m
-    for (let length in [40, 50, 60, 70, 80]) {
-      
+    let URLs: string[] = [];
+    for (let length of [40, 50, 60, 70, 80]) {
+      const chartURL = await this.getDataAndUpdateChart(length);
+      URLs.push(chartURL);
     }
-    console.log('Child function called!');
+    
+    
+    console.log(URLs);
+
+    return URLs;
   }
-  
+
+  async getDataAndUpdateChart(length: number) {
+    await this.updateData(length);
+    return this.chartComponent.getURL();
+  }
 
 }

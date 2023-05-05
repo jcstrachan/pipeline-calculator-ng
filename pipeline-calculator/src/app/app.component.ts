@@ -3,6 +3,7 @@ import { IPipelineParameters } from './interfaces/pipeline-parameters';
 import * as numeric from 'numeric';
 import { IPipeline } from './interfaces/pipeline';
 import { DataVisualisationComponent } from './components/data-visualisation/data-visualisation.component';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-root',
@@ -149,9 +150,28 @@ export class AppComponent {
 
   @ViewChild(DataVisualisationComponent, {static: false}) dataComponent!: DataVisualisationComponent;
 
-  public exportData(event: Event) {
+  public async exportData(event: Event) {
     if (event) {
-      this.dataComponent.collectChartData();
+
+      let chartURLs: string[] = await this.dataComponent.getURLs();
+
+      const doc = new jsPDF();
+      doc.setFontSize(16);
+      doc.text('Pipeline Buoyancy Module Calculator', 10, 20);
+
+      doc.setFontSize(12);
+      var lines = doc.splitTextToSize('The first step is to calculate the theta function, for the purposes of this proof of concept, these values were estimated. Once the theta function has been defined, the coordinates and forces acting on the pipeline can be calculated.', 180);
+      doc.text(lines, 10, 35);
+
+      lines = doc.splitTextToSize('First, we will display the graphs for the elevation of each buoyancy section: ', 180);
+      doc.text(lines, 10, 50)
+      doc.addImage(chartURLs[0], 'PNG', 10, 50, 40, 40);
+      doc.addImage(chartURLs[1], 'PNG', 50, 50, 40, 40);
+      doc.addImage(chartURLs[2], 'PNG', 90, 50, 40, 40);
+      doc.addImage(chartURLs[3], 'PNG', 130, 50, 40, 40);
+      doc.addImage(chartURLs[4], 'PNG', 170, 50, 40, 40);
+      doc.save('file.pdf')
+
     }
   }
 
