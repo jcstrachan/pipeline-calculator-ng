@@ -26,7 +26,7 @@ export class DataVisualisationComponent implements OnChanges {
 
   yLimits: number[][] = [
     [-5, 5],
-    [-1, 1],
+    [-2, 2],
     [-5, 5],
     [-1, 2.5]
   ]
@@ -73,10 +73,12 @@ export class DataVisualisationComponent implements OnChanges {
       // Next we assign the coordinates to the first index of the array
       if (pipe) {
         this.data[0] = pipe.coordinates;
-        this.data[1] = this.genCoords(pipe.bendingMoments);
-        this.data[2] = this.genCoords(pipe.shearForces);
-        this.data[3] = this.genCoords(pipe.axialTensionForces);
+        this.data[1] = this.genCoords(pipe.bendingMoments, 100000000000);
+        this.data[2] = this.genCoords(pipe.shearForces, 10000000000);
+        this.data[3] = this.genCoords(pipe.axialTensionForces, 0);
       }
+
+      console.log('New data:', this.data);
 
       resolve();
 
@@ -84,38 +86,16 @@ export class DataVisualisationComponent implements OnChanges {
     
   }
 
-  private genCoords(yVals: number[]): number[][] {
+  private genCoords(yVals: number[], divFactor: number): number[][] {
     let xyVals: number[][] = [];
     let x = 0;
 
     for (let yVal of yVals) {
-      xyVals.push([x*18.5, yVal*0.0000000000035]);
+      xyVals.push([x, yVal/divFactor]);
       x += this.deltaS;
     }
 
     return xyVals;
-  }
-
-  @ViewChild(ChartComponent, {static: false}) chartComponent!: ChartComponent;
-
-  public async getURLs(): Promise<string[]> {
-    // First we need to collect the data for each length of buoyancy section.
-    // We will collect data for 40m, 50m, 60m, 70m and 80m
-    let URLs: string[] = [];
-    for (let length of [40, 50, 60, 70, 80]) {
-      const chartURL = await this.getDataAndUpdateChart(length);
-      URLs.push(chartURL);
-    }
-    
-    
-    console.log(URLs);
-
-    return URLs;
-  }
-
-  async getDataAndUpdateChart(length: number) {
-    await this.updateData(length);
-    return this.chartComponent.getURL();
   }
 
 }

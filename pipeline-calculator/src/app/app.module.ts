@@ -32,7 +32,7 @@ import { MatSelectModule } from '@angular/material/select';
       echarts: () => import('echarts'),
     }),
     MatSelectModule,
-    FormsModule
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

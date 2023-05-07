@@ -4,6 +4,7 @@ import * as numeric from 'numeric';
 import { IPipeline } from './interfaces/pipeline';
 import { DataVisualisationComponent } from './components/data-visualisation/data-visualisation.component';
 import jsPDF from 'jspdf';
+import { ExportSettingsComponent } from './components/export-settings/export-settings.component';
 
 @Component({
   selector: 'app-root',
@@ -65,17 +66,11 @@ export class AppComponent {
     const thetaValues: number[] = []
 
     let x = 0;
-    let slope, angle;
 
     while (x <= this.parameters.spanLength) {
-      // First step is to calculate the slope at the current x 
-      slope = -a * 0.5 * (x-3) * Math.exp(-((0.5 * (x-3))**2)) + 1.2 * 0.4 * ((0.3 * (x - 3)) ** 3) * Math.exp(-((0.3 * (x-3))**4));
-
-      // Next we can calculate the angle between the curve and the x-axis, taking into account if it is negative
-      angle = Math.atan(slope);
-      if (slope < 0) {
-        angle += Math.PI;
-      }
+      // First step is to calculate the slope at the current x, then convert it into an angle
+      let slope = -0.1 * a * (x/10 - 0.5) * Math.exp(-0.25 * ((x/20) - 5)**2) - 1.2 * a * (x/20 - 2.5)**3 * Math.exp(-0.09 * ((x/20) - 5)**4);
+      let angle = Math.atan(slope) * 180 / Math.PI;
 
       // Finally, we add it to the array of theta angles and increment our x value
       thetaValues.push(angle);
@@ -93,7 +88,7 @@ export class AppComponent {
     
     while (x <= this.parameters.spanLength) {
       // We calculate the z value at the current x and push it to the array
-      xzVals.push([x * 8.3, (a * Math.exp(-((0.5 * (x - 6))**2)) - 0.4 * Math.exp(-((0.3 * (x - 6))**4))) * 2]);
+      xzVals.push([x, a * Math.exp(-((0.5 * ((x/20) - 5))**2)) - 0.4 * Math.exp(-((0.3 * ((x/20) - 5))**4))]);
       // Then we increment the x value
       x += deltaS;
     }
@@ -148,31 +143,35 @@ export class AppComponent {
     return [minElevationGap, minBendingDifference, maxShearForce, maxAxialTension];
   }
 
-  @ViewChild(DataVisualisationComponent, {static: false}) dataComponent!: DataVisualisationComponent;
+  @ViewChild(ExportSettingsComponent, {static: false}) exportSettings!: ExportSettingsComponent;
 
   public async exportData(event: Event) {
     if (event) {
 
-      let chartURLs: string[] = await this.dataComponent.getURLs();
-
-      const doc = new jsPDF();
-      doc.setFontSize(16);
-      doc.text('Pipeline Buoyancy Module Calculator', 10, 20);
-
-      doc.setFontSize(12);
-      var lines = doc.splitTextToSize('The first step is to calculate the theta function, for the purposes of this proof of concept, these values were estimated. Once the theta function has been defined, the coordinates and forces acting on the pipeline can be calculated.', 180);
-      doc.text(lines, 10, 35);
-
-      lines = doc.splitTextToSize('First, we will display the graphs for the elevation of each buoyancy section: ', 180);
-      doc.text(lines, 10, 50)
-      doc.addImage(chartURLs[0], 'PNG', 10, 50, 40, 40);
-      doc.addImage(chartURLs[1], 'PNG', 50, 50, 40, 40);
-      doc.addImage(chartURLs[2], 'PNG', 90, 50, 40, 40);
-      doc.addImage(chartURLs[3], 'PNG', 130, 50, 40, 40);
-      doc.addImage(chartURLs[4], 'PNG', 170, 50, 40, 40);
-      doc.save('file.pdf')
+      this.exportSettings.beginExport(this.pipelineResults, this.deltaS);
 
     }
+
+    // let chartURLs: string[] = await this.dataComponent.getURLs();
+
+    //   const doc = new jsPDF();
+    //   doc.setFontSize(16);
+    //   doc.text('Pipeline Buoyancy Module Calculator', 10, 20);
+
+    //   doc.setFontSize(12);
+    //   var lines = doc.splitTextToSize('The first step is to calculate the theta function, for the purposes of this proof of concept, these values were estimated. Once the theta function has been defined, the coordinates and forces acting on the pipeline can be calculated.', 180);
+    //   doc.text(lines, 10, 35);
+
+    //   lines = doc.splitTextToSize('First, we will display the graphs for the elevation of each buoyancy section: ', 180);
+    //   doc.text(lines, 10, 50)
+    //   doc.addImage(chartURLs[0], 'PNG', 10, 50, 40, 40);
+    //   doc.addImage(chartURLs[1], 'PNG', 50, 50, 40, 40);
+    //   doc.addImage(chartURLs[2], 'PNG', 90, 50, 40, 40);
+    //   doc.addImage(chartURLs[3], 'PNG', 130, 50, 40, 40);
+    //   doc.addImage(chartURLs[4], 'PNG', 170, 50, 40, 40);
+    //   doc.save('file.pdf')
+
+
   }
 
 

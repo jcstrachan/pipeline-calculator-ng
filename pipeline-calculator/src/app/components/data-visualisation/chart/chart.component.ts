@@ -11,7 +11,7 @@ export class ChartComponent {
   @Input() data: number[][] = [];
   @Input() yAxisName: string = '';
   @Input() yLimits: number[] = [];
-  xAxisName: string = 'Length of buoyancysection (m)';
+  xAxisName: string = 'Length of buoyancy section (m)';
 
   chartOption: echarts.EChartsOption = {};
   
@@ -21,7 +21,6 @@ export class ChartComponent {
 
   private updateChart(newData: any) {
     this.chartOption = {
-      animation: false,
       grid: {
         top: 40,
         left: 50,
@@ -31,7 +30,7 @@ export class ChartComponent {
       xAxis: {
         name: this.xAxisName,
         min: 0,
-        max: 100,
+        max: 200,
         minorTick: {
           show: true
         },
@@ -68,7 +67,26 @@ export class ChartComponent {
           clip: true,
           data: newData
         }
-      ]
+      ],
+      dataZoom: [
+        {
+          type: 'inside',
+          xAxisIndex: 0,
+          filterMode: 'none',
+          zoomOnMouseWheel: true,
+          moveOnMouseMove: true
+        },
+        {
+          type: 'slider',
+          xAxisIndex: 0,
+          filterMode: 'none',
+          show: false
+        }
+      ],
+      animation: false,
+      tooltip: {
+        show: false
+      }
     };
 
   }

@@ -1,4 +1,8 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { ChartComponent } from '../data-visualisation/chart/chart.component';
+import { IPipeline } from 'src/app/interfaces/pipeline';
+import jsPDF from 'jspdf';
+import * as echarts from 'echarts';
 
 @Component({
   selector: 'app-export-settings',
@@ -9,13 +13,231 @@ export class ExportSettingsComponent implements OnInit {
 
   constructor() { }
 
+  elevationURLs: string[] = [];
+  bendingURLs: string[] = [];
+  shearURLs: string[] = [];
+
+  downloadOptions: boolean[] = [false, false, false];
+
+  yLimits: number[][] = [
+    [-5, 5],
+    [-2, 2],
+    [-5, 5],
+    [-1, 2.5]
+  ]
+
+  yAxisNames: string[] = [
+    'Axial tension force (N)*10^4'
+  ]
+
   @Output() exportEmitter = new EventEmitter;
 
   ngOnInit(): void {
   }
 
+  @ViewChild(ChartComponent, {static: false}) chartComponent!: ChartComponent;
+
   public exportData() {
     this.exportEmitter.emit(true);
   }
 
+  public updateDownloadOptions(optionNumber: number) {
+    this.downloadOptions[optionNumber] = !this.downloadOptions[optionNumber];
+    console.log(this.downloadOptions)
+  }
+
+  public async beginExport(pipelines: IPipeline[], deltaS: number) {
+    if (this.downloadOptions[0]) {
+      // download JSON variables
+    }
+    if (this.downloadOptions[1]) {
+      // download PDF of charts
+      this.exportPDF(pipelines, deltaS);
+    }
+
+  }
+
+  public async exportPDF(pipelines: IPipeline[], deltaS: number) {
+    this.elevationURLs, this.bendingURLs, this.shearURLs = []
+    const doc = new jsPDF();
+    const canvas = document.createElement('canvas');
+    canvas.width = 400;
+    canvas.height = 400;
+    let docY: number = 10
+
+    for (let length of [40, 50, 60, 70, 80]) {
+      const pipe = pipelines.find(item => item.buoyancySectionLength === length);
+
+      if (pipe) {
+        // get the elevation chart
+        const chart = echarts.init(canvas);
+        chart.setOption(this.getChartOption(pipe.coordinates, 'Elevation (m)', [-5, 5]));
+        const elevImage = chart.getDataURL();
+        this.elevationURLs.push(elevImage);
+
+        // get the bending moments chart
+        chart.setOption(this.getChartOption(this.genCoords(pipe.bendingMoments, deltaS, 100000000000), 'Bending moment (N*m)*10^7', [-2, 2]))
+        const bendImage = chart.getDataURL();
+        this.bendingURLs.push(bendImage);
+
+        // get the shear forces chart
+        chart.setOption(this.getChartOption(this.genCoords(pipe.shearForces, deltaS, 10000000000), 'Shear force (N)*10^5', [-5, 5]));
+        const shearImage = chart.getDataURL();
+        this.shearURLs.push(shearImage);
+      }
+      
+
+    }
+
+    doc.setFontSize(12);
+
+    if (this.downloadOptions[2]==true) {
+      doc.setFontSize(16);
+      doc.text('Pipeline Buoyancy Module Calculator', 10, docY);
+      docY += 15;
+
+      doc.setFontSize(12);
+      var lines = doc.splitTextToSize('The first step is to calculate the theta function, for the purposes of this proof of concept, these values were estimated. Once the theta function has been defined, the coordinates and forces acting on the pipeline can be calculated.', 180);
+      doc.text(lines, 10, docY);
+      docY += 20;
+    }
+
+    lines = doc.splitTextToSize('Elevation graphs of each buoyancy section: ', 180);
+    doc.text(lines, 10, docY);
+    docY += 5;
+
+    doc.addImage(this.elevationURLs[0], 'PNG', 5, docY, 60, 60);
+    doc.addImage(this.elevationURLs[1], 'PNG', 75, docY, 60, 60);
+    doc.addImage(this.elevationURLs[2], 'PNG', 145, docY, 60, 60);
+    docY += 70;
+    doc.addImage(this.elevationURLs[3], 'PNG', 40, docY, 60, 60);
+    doc.addImage(this.elevationURLs[4], 'PNG', 120, docY, 60, 60);
+    docY += 70;
+
+    if (this.downloadOptions[2]==true) {
+      lines = doc.splitTextToSize('Next, the bending moments acting along the pipeline are calculated. To do this, we use the results from the previous calculations in the following equation: ', 180);
+      doc.text(lines, 10, docY);
+      docY += 5;
+
+      var img = new Image();
+      img.src = '../../../assets/bendingMoments.png'
+      doc.addImage(img, 'png', 80, docY, 50, 20);
+      docY += 25;
+
+      lines = doc.splitTextToSize('As you can see in the equation above, to calculate the bending moment at the current position, you multiple E and I (where E = Pipeline\'s elasticity modulus and I is the moment of intertia of the pipeline\'s cross section). You then multiply that by the following fraction. The fraction takes the current theta value minus the previous theta value as a numerator and the length of the finite difference interval as a denominator. After looping all theta values through this equation we can then plot the data onto graphs.', 180);
+      doc.text(lines, 10, docY);
+      docY += 35;
+      
+    }
+
+    lines = doc.splitTextToSize('Bending moment graphs of each buoyancy section: ', 180);
+    doc.text(lines, 10, docY);
+    docY += 5;
+
+    doc.addImage(this.bendingURLs[0], 'PNG', 5, docY, 40, 40);
+    doc.addImage(this.bendingURLs[1], 'PNG', 45, docY, 40, 40);
+    doc.addImage(this.bendingURLs[2], 'PNG', 85, docY, 40, 40);
+    doc.addImage(this.bendingURLs[3], 'PNG', 125, docY, 40, 40);
+    doc.addImage(this.bendingURLs[4], 'PNG', 165, docY, 40, 40);
+    docY += 50;
+
+    if (this.downloadOptions[2]==true) {
+      lines = doc.splitTextToSize('Now that the bending moments across the pipeline have been calculated, we can now use the results to calculate the shear force across the pipeline by using the following equation: ', 180);
+      doc.text(lines, 10, docY);
+      docY += 5;
+
+      var img = new Image();
+      img.src = '../../../assets/shearForces.png'
+      doc.addImage(img, 'png', 80, docY, 50, 20);
+      docY += 25;
+
+      lines = doc.splitTextToSize('This time the equation is a lot more simple. To calculate the shear force at the current position, you take the negative of a fraction where the numerator is the current bending moment minus the previous bending moment and the denominator is the length of the finite difference interval. After calculating each shear foce, we can then once again plot the data.', 180);
+      doc.text(lines, 10, docY);
+      docY += 30;
+
+      doc.addPage();
+      docY = 20;
+      
+    }
+
+    lines = doc.splitTextToSize('Shear force graphs of each buoyancy section: ', 180);
+    doc.text(lines, 10, docY);
+    docY += 5;
+
+    doc.addImage(this.shearURLs[0], 'PNG', 5, docY, 40, 40);
+    doc.addImage(this.shearURLs[1], 'PNG', 45, docY, 40, 40);
+    doc.addImage(this.shearURLs[2], 'PNG', 85, docY, 40, 40);
+    doc.addImage(this.shearURLs[3], 'PNG', 125, docY, 40, 40);
+    doc.addImage(this.shearURLs[4], 'PNG', 165, docY, 40, 40);
+    docY += 50;
+
+    doc.save('file.pdf');
+  }
+
+  private genCoords(yVals: number[], deltaS: number, divFactor: number): number[][] {
+    let xyVals: number[][] = [];
+    let x = 0;
+
+    for (let yVal of yVals) {
+      xyVals.push([x, yVal/divFactor]);
+      x += deltaS;
+    }
+
+    return xyVals;
+  }
+
+  public getChartOption(data: number[][], yAxisName: string, yLimits: number[]): echarts.EChartsOption {
+    let chartOption: echarts.EChartsOption = {
+      animation: false,
+      grid: {
+        top: 40,
+        left: 50,
+        right: 40,
+        bottom: 50
+      },
+      xAxis: {
+        name: 'Length of buoyancy section (m)',
+        min: 0,
+        max: 200,
+        minorTick: {
+          show: true
+        },
+        minorSplitLine: {
+          show: false
+        },
+        nameLocation: 'middle',
+        nameGap: 25,
+        nameTextStyle: {
+          color: '#333333'
+        }
+      },
+      yAxis: {
+        name: yAxisName,
+        min: yLimits[0],
+        max: yLimits[1],
+        minorTick: {
+          show: true
+        },
+        minorSplitLine: {
+          show: false
+        },
+        nameLocation: 'middle',
+        nameGap: 25,
+        nameTextStyle: {
+          color: '#333333'
+        }
+      },
+      series: [
+        {
+          type: 'line',
+          showSymbol: false,
+          smooth: true,
+          clip: true,
+          data: data
+        }
+      ]
+    };
+    return chartOption;
+  }
+   
 }
