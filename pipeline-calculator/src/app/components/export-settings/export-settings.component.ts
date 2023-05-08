@@ -3,6 +3,9 @@ import { ChartComponent } from '../data-visualisation/chart/chart.component';
 import { IPipeline } from 'src/app/interfaces/pipeline';
 import jsPDF from 'jspdf';
 import * as echarts from 'echarts';
+import { MatDialog } from '@angular/material/dialog';
+import { InvalidExportDialogComponent } from '../../dialogues/invalid-export-dialog/invalid-export-dialog.component';
+import { ExportDialogComponent } from '../..//dialogues/export-dialog/export-dialog.component';
 
 @Component({
   selector: 'app-export-settings',
@@ -11,7 +14,7 @@ import * as echarts from 'echarts';
 })
 export class ExportSettingsComponent implements OnInit {
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
 
   elevationURLs: string[] = [];
   bendingURLs: string[] = [];
@@ -43,18 +46,33 @@ export class ExportSettingsComponent implements OnInit {
 
   public updateDownloadOptions(optionNumber: number) {
     this.downloadOptions[optionNumber] = !this.downloadOptions[optionNumber];
-    console.log(this.downloadOptions)
   }
 
   public async beginExport(pipelines: IPipeline[], deltaS: number) {
-    if (this.downloadOptions[0]) {
-      // download JSON variables
+    if (this.downloadOptions[0] === false && this.downloadOptions[1] === false) {
+      this.dialog.open(InvalidExportDialogComponent);
+    } else {
+      this.dialog.open(ExportDialogComponent);
+      if (this.downloadOptions[0]) {
+        // download JSON variables
+        this.exportJSON(pipelines);
+      }
+      if (this.downloadOptions[1]) {
+        // download PDF of charts
+        this.exportPDF(pipelines, deltaS);
+      }
     }
-    if (this.downloadOptions[1]) {
-      // download PDF of charts
-      this.exportPDF(pipelines, deltaS);
-    }
+  }
 
+  public exportJSON(pipelines: IPipeline[]) {
+    const jsonFile = JSON.stringify(pipelines);
+    const blob = new Blob([jsonFile], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = 'pipelines_data.json';
+    link.href = url;
+    link.click();
+    URL.revokeObjectURL(url);
   }
 
   public async exportPDF(pipelines: IPipeline[], deltaS: number) {
@@ -97,9 +115,9 @@ export class ExportSettingsComponent implements OnInit {
       docY += 15;
 
       doc.setFontSize(12);
-      var lines = doc.splitTextToSize('The first step is to calculate the theta function, for the purposes of this proof of concept, these values were estimated. Once the theta function has been defined, the coordinates and forces acting on the pipeline can be calculated.', 180);
+      var lines = doc.splitTextToSize('The first step is to calculate the theta function, for the purposes of this proof of concept, these values were estimated (to see a detailed explanation on this, view appendix 1 of this document). Once the theta function has been defined, the coordinates and forces acting on the pipeline can be calculated.', 180);
       doc.text(lines, 10, docY);
-      docY += 20;
+      docY += 25;
     }
 
     lines = doc.splitTextToSize('Elevation graphs of each buoyancy section: ', 180);
@@ -117,16 +135,17 @@ export class ExportSettingsComponent implements OnInit {
     if (this.downloadOptions[2]==true) {
       lines = doc.splitTextToSize('Next, the bending moments acting along the pipeline are calculated. To do this, we use the results from the previous calculations in the following equation: ', 180);
       doc.text(lines, 10, docY);
-      docY += 5;
+      docY += 10;
 
       var img = new Image();
       img.src = '../../../assets/bendingMoments.png'
       doc.addImage(img, 'png', 80, docY, 50, 20);
-      docY += 25;
+      docY += 30;
 
       lines = doc.splitTextToSize('As you can see in the equation above, to calculate the bending moment at the current position, you multiple E and I (where E = Pipeline\'s elasticity modulus and I is the moment of intertia of the pipeline\'s cross section). You then multiply that by the following fraction. The fraction takes the current theta value minus the previous theta value as a numerator and the length of the finite difference interval as a denominator. After looping all theta values through this equation we can then plot the data onto graphs.', 180);
       doc.text(lines, 10, docY);
-      docY += 35;
+      doc.addPage();
+      docY = 20;
       
     }
 
@@ -134,27 +153,32 @@ export class ExportSettingsComponent implements OnInit {
     doc.text(lines, 10, docY);
     docY += 5;
 
-    doc.addImage(this.bendingURLs[0], 'PNG', 5, docY, 40, 40);
-    doc.addImage(this.bendingURLs[1], 'PNG', 45, docY, 40, 40);
-    doc.addImage(this.bendingURLs[2], 'PNG', 85, docY, 40, 40);
-    doc.addImage(this.bendingURLs[3], 'PNG', 125, docY, 40, 40);
-    doc.addImage(this.bendingURLs[4], 'PNG', 165, docY, 40, 40);
-    docY += 50;
+    doc.addImage(this.bendingURLs[0], 'PNG', 5, docY, 60, 60);
+    doc.addImage(this.bendingURLs[1], 'PNG', 75, docY, 60, 60);
+    doc.addImage(this.bendingURLs[2], 'PNG', 145, docY, 60, 60);
+    docY += 70;
+    doc.addImage(this.bendingURLs[3], 'PNG', 40, docY, 60, 60);
+    doc.addImage(this.bendingURLs[4], 'PNG', 120, docY, 60, 60);
+
+    if (!this.downloadOptions[2]){
+      doc.addPage();
+      docY = 20;
+    } else {
+      docY += 70;
+    }
 
     if (this.downloadOptions[2]==true) {
       lines = doc.splitTextToSize('Now that the bending moments across the pipeline have been calculated, we can now use the results to calculate the shear force across the pipeline by using the following equation: ', 180);
       doc.text(lines, 10, docY);
-      docY += 5;
+      docY += 10;
 
       var img = new Image();
       img.src = '../../../assets/shearForces.png'
       doc.addImage(img, 'png', 80, docY, 50, 20);
-      docY += 25;
+      docY += 30;
 
       lines = doc.splitTextToSize('This time the equation is a lot more simple. To calculate the shear force at the current position, you take the negative of a fraction where the numerator is the current bending moment minus the previous bending moment and the denominator is the length of the finite difference interval. After calculating each shear foce, we can then once again plot the data.', 180);
       doc.text(lines, 10, docY);
-      docY += 30;
-
       doc.addPage();
       docY = 20;
       
@@ -164,12 +188,13 @@ export class ExportSettingsComponent implements OnInit {
     doc.text(lines, 10, docY);
     docY += 5;
 
-    doc.addImage(this.shearURLs[0], 'PNG', 5, docY, 40, 40);
-    doc.addImage(this.shearURLs[1], 'PNG', 45, docY, 40, 40);
-    doc.addImage(this.shearURLs[2], 'PNG', 85, docY, 40, 40);
-    doc.addImage(this.shearURLs[3], 'PNG', 125, docY, 40, 40);
-    doc.addImage(this.shearURLs[4], 'PNG', 165, docY, 40, 40);
-    docY += 50;
+    doc.addImage(this.shearURLs[0], 'PNG', 5, docY, 60, 60);
+    doc.addImage(this.shearURLs[1], 'PNG', 75, docY, 60, 60);
+    doc.addImage(this.shearURLs[2], 'PNG', 145, docY, 60, 60);
+    docY += 70;
+    doc.addImage(this.shearURLs[3], 'PNG', 40, docY, 60, 60);
+    doc.addImage(this.shearURLs[4], 'PNG', 120, docY, 60, 60);
+    docY += 70;
 
     doc.save('file.pdf');
   }
@@ -203,13 +228,16 @@ export class ExportSettingsComponent implements OnInit {
           show: true
         },
         minorSplitLine: {
-          show: false
+          show: true
         },
         nameLocation: 'middle',
         nameGap: 25,
         nameTextStyle: {
           color: '#333333'
-        }
+        },
+        axisLabel: {
+          fontSize: 16
+        },
       },
       yAxis: {
         name: yAxisName,
@@ -219,12 +247,15 @@ export class ExportSettingsComponent implements OnInit {
           show: true
         },
         minorSplitLine: {
-          show: false
+          show: true
         },
         nameLocation: 'middle',
         nameGap: 25,
         nameTextStyle: {
           color: '#333333'
+        },
+        axisLabel: {
+          fontSize: 16
         }
       },
       series: [
@@ -233,7 +264,11 @@ export class ExportSettingsComponent implements OnInit {
           showSymbol: false,
           smooth: true,
           clip: true,
-          data: data
+          data: data,
+          label: {
+            fontSize: 16
+          }
+          
         }
       ]
     };

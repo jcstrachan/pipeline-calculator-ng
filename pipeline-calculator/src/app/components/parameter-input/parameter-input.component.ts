@@ -42,4 +42,18 @@ export class ParameterInputComponent {
     this.parameterEmitter.emit(parameters);
   }
 
+  resetParameters() {
+    this.parametersForm.controls['finiteDifferenceSubintervalAmount'].setValue(0);
+    this.parametersForm.controls['pipelineOuterDiameter'].setValue(0);
+    this.parametersForm.controls['pipelineWallThickness'].setValue(0);
+    this.parametersForm.controls['pipelineElasticityModulus'].setValue(0);
+    this.parametersForm.controls['pipelineDensity'].setValue(0);
+    this.parametersForm.controls['seawaterDensity'].setValue(0);
+    this.parametersForm.controls['spanLength'].setValue(0);
+    this.parametersForm.controls['elevationGap'].setValue(0);
+    this.parametersForm.controls['spanShoulderLength'].setValue(0);
+    this.parametersForm.controls['effectiveAxialTension'].setValue(0);
+    this.parametersForm.controls['seafloorStiffness'].setValue(0);
+  }
+
 }

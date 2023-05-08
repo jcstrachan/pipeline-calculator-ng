@@ -1,10 +1,11 @@
 import { Component, ViewChild  } from '@angular/core';
 import { IPipelineParameters } from './interfaces/pipeline-parameters';
-import * as numeric from 'numeric';
 import { IPipeline } from './interfaces/pipeline';
-import { DataVisualisationComponent } from './components/data-visualisation/data-visualisation.component';
-import jsPDF from 'jspdf';
 import { ExportSettingsComponent } from './components/export-settings/export-settings.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ParameterErrorDialogComponent } from './dialogues/parameter-error-dialog/parameter-error-dialog.component';
+import { SubmitDialogComponent } from './dialogues/submit-dialog/submit-dialog.component';
+import { IMaxForces } from './interfaces/max-forces';
 
 @Component({
   selector: 'app-root',
@@ -12,12 +13,16 @@ import { ExportSettingsComponent } from './components/export-settings/export-set
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+
+  constructor (public dialog: MatDialog) {}
+
   title = 'PBMC';
   public parameters!: IPipelineParameters;
   public pipelineResults: IPipeline[] = [];
   public deltaS!: number;
 
   public updateParameters(event: IPipelineParameters) {
+    this.submitDialog();
     this.parameters = event;
     this.pipelineResults = this.calculatePipelines();
   }
@@ -126,52 +131,21 @@ export class AppComponent {
     }
   }
 
-
-  // Takes an IPipeline object as input and returns an array of its max forces
-  public findMaxForces(pipeline: IPipeline): number[] {
-    // Defining all the max forces
-    let zVals: number[] = [];
-    for (let i = 0; i < pipeline.coordinates.length; i++) {
-      zVals.push(pipeline.coordinates[i][1]);
-    }
-    let minElevationGap: number = Math.max(...zVals) - Math.min(...zVals);
-    let minBendingDifference: number = Math.max(...pipeline.bendingMoments) - Math.abs(Math.min(...pipeline.bendingMoments));
-    let maxShearForce: number = Math.max(...pipeline.shearForces);
-    let maxAxialTension: number = Math.max(...pipeline.axialTensionForces);
-
-    // Returning max forces in an array
-    return [minElevationGap, minBendingDifference, maxShearForce, maxAxialTension];
-  }
-
   @ViewChild(ExportSettingsComponent, {static: false}) exportSettings!: ExportSettingsComponent;
 
   public async exportData(event: Event) {
-    if (event) {
+    if (event && this.pipelineResults.length != 0) {
 
       this.exportSettings.beginExport(this.pipelineResults, this.deltaS);
 
+    } else {
+      this.dialog.open(ParameterErrorDialogComponent);
     }
 
-    // let chartURLs: string[] = await this.dataComponent.getURLs();
+  }
 
-    //   const doc = new jsPDF();
-    //   doc.setFontSize(16);
-    //   doc.text('Pipeline Buoyancy Module Calculator', 10, 20);
-
-    //   doc.setFontSize(12);
-    //   var lines = doc.splitTextToSize('The first step is to calculate the theta function, for the purposes of this proof of concept, these values were estimated. Once the theta function has been defined, the coordinates and forces acting on the pipeline can be calculated.', 180);
-    //   doc.text(lines, 10, 35);
-
-    //   lines = doc.splitTextToSize('First, we will display the graphs for the elevation of each buoyancy section: ', 180);
-    //   doc.text(lines, 10, 50)
-    //   doc.addImage(chartURLs[0], 'PNG', 10, 50, 40, 40);
-    //   doc.addImage(chartURLs[1], 'PNG', 50, 50, 40, 40);
-    //   doc.addImage(chartURLs[2], 'PNG', 90, 50, 40, 40);
-    //   doc.addImage(chartURLs[3], 'PNG', 130, 50, 40, 40);
-    //   doc.addImage(chartURLs[4], 'PNG', 170, 50, 40, 40);
-    //   doc.save('file.pdf')
-
-
+  submitDialog() {
+    this.dialog.open(SubmitDialogComponent);
   }
 
 
