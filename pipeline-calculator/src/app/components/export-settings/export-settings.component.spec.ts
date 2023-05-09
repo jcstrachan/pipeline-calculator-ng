@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MatDialogModule } from '@angular/material/dialog';
 import { ExportSettingsComponent } from './export-settings.component';
 
 describe('ExportSettingsComponent', () => {
@@ -8,7 +8,10 @@ describe('ExportSettingsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ExportSettingsComponent ]
+      declarations: [ ExportSettingsComponent ],
+      imports: [
+        MatDialogModule
+      ]
     })
     .compileComponents();
 
