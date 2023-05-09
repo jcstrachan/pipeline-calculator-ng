@@ -63,6 +63,7 @@
 }
 
 .manual-download {
+    background-color: rgb(245, 245, 245);
     color: rgb(47, 47, 47);
     float: right;
     text-align: right; 
@@ -70,6 +71,13 @@
     padding: 3px 15px; 
     font-size: 22px;
     text-decoration: none;
-    border: 1px solid black;
+    border: 1px solid rgb(47, 47, 47);
     border-radius: 5px;
+    transition: 0.2s;
+}
+
+.manual-download:hover {
+    background-color: rgb(47, 47, 47);
+    color: rgb(238, 238, 238);
+    transition: 0.2s;
 }

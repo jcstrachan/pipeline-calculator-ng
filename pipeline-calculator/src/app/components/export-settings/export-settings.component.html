@@ -1,9 +1,14 @@
-<h2>Export Settings</h2>
-Variable Data:<br/>
-Download variable data as JSON: <input type="checkbox" class="checkbox" (change)="updateDownloadOptions(0)"><br/><br/>
+<div class="container">
+    <h2>Export Settings</h2>
+    <span>
+        Data:<br/>
+        Download variable data as JSON: <input type="checkbox" class="checkbox" (change)="updateDownloadOptions(0)"><br/><br/>
+    </span>
 
-Graph Data:<br/>
-Download graphs as PDF: <input type="checkbox" class="checkbox" (change)="updateDownloadOptions(1)"><br/>
-Include graph explanations: <input [disabled]="!downloadOptions[1]" type="checkbox" class="checkbox" (change)="updateDownloadOptions(2)"><br/><br/>
-
-<button mat-raised-button (click)="exportData()">Export data</button>
+    <span>
+        Graph Data:<br/>
+        Download graphs as PDF: <input type="checkbox" class="checkbox" (change)="updateDownloadOptions(1)"><br/>
+        Include graph explanations: <input [disabled]="!downloadOptions[1]" type="checkbox" class="checkbox" (change)="updateDownloadOptions(2)"><br/><br/>
+    </span> 
+    <button class="button" (click)="exportData()">Export data</button>
+</div>

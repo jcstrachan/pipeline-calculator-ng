@@ -210,8 +210,13 @@ export class ExportSettingsComponent implements OnInit {
 
       var img = new Image();
       img.src = '../../../assets/thetaCalc.png'
-      doc.addImage(img, 'png', 70, docY, 70, 15);
+      doc.addImage(img, 'png', 70, docY, 75, 15);
       docY += 30;
+
+      doc.setFontSize(12);
+      var lines = doc.splitTextToSize('The variable "a" is altered depending on the buoyancy section length whilst the variables "b", "c" and "d" are set to constant values to mimic the shape of pipeline configurations. The derivative is then taken at each point along this function and the local angle to the horizontal axis is taken to create a mock theta function of the pipeline.', 180);
+      doc.text(lines, 10, docY);
+      docY += 20;
 
     }
 
