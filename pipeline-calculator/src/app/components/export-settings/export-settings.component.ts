@@ -196,6 +196,25 @@ export class ExportSettingsComponent implements OnInit {
     doc.addImage(this.shearURLs[4], 'PNG', 120, docY, 60, 60);
     docY += 70;
 
+    if (this.downloadOptions[2]==true) {
+      docY = 10;
+      doc.addPage();
+      doc.setFontSize(16);
+      doc.text('Appendix', 10, docY);
+      docY += 15;
+
+      doc.setFontSize(12);
+      var lines = doc.splitTextToSize('As mentioned at the start of this document, the theta function for this proof of concept is just an estimate. This is done by using a pre-determined function that alters the shape of the curve based on the length of the buoyancy module section. The equation used for this calculation is as follows:', 180);
+      doc.text(lines, 10, docY);
+      docY += 20;
+
+      var img = new Image();
+      img.src = '../../../assets/thetaCalc.png'
+      doc.addImage(img, 'png', 70, docY, 70, 15);
+      docY += 30;
+
+    }
+
     doc.save('file.pdf');
   }
 

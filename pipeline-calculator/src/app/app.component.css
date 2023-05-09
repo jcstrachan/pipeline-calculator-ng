@@ -61,3 +61,15 @@
     font-size: large;
     font-weight: bolder;
 }
+
+.manual-download {
+    color: rgb(47, 47, 47);
+    float: right;
+    text-align: right; 
+    margin-right: 15px;
+    padding: 3px 15px; 
+    font-size: 22px;
+    text-decoration: none;
+    border: 1px solid black;
+    border-radius: 5px;
+}

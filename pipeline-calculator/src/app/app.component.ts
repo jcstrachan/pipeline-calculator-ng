@@ -148,5 +148,9 @@ export class AppComponent {
     this.dialog.open(SubmitDialogComponent);
   }
 
+  downloadManual() {
+
+  }
+
 
 }
