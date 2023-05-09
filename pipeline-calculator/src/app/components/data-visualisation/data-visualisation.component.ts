@@ -1,5 +1,6 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
+import { IMaxForces } from 'src/app/interfaces/max-forces';
 import { IPipeline } from 'src/app/interfaces/pipeline';
 
 interface Food {
@@ -20,21 +21,14 @@ export class DataVisualisationComponent implements OnChanges {
     {label: '60m', value: '60'},
     {label: '70m', value: '70'},
     {label: '80m', value: '80'},
+    {label: 'Max Forces', value: '0'}
   ]
 
-  yLimits: number[][] = [
-    [-5, 5],
-    [-1, 1],
-    [-5, 5],
-    [-1, 2.5]
-  ]
+  yAxisNames: string[] = []
+  yLimits: number[][] = []
+  xLimits: number[] = []
 
-  yAxisNames: string[] = [
-    'Elevation (m)',
-    'Bending moment (N*m)*10^7',
-    'Shear force (N)*10^5',
-    'Axial tension force (N)*10^4'
-  ]
+  maxForces!: IMaxForces;
 
   selectedOption!: string;
   data: number[][][] = [];
@@ -49,8 +43,9 @@ export class DataVisualisationComponent implements OnChanges {
   @Input() deltaS: number = 1;
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['_pipelines']) {
-      this._pipelines = changes['_pipelines'].currentValue;
+    if (changes['pipelines'].currentValue.length > 0) {
+      this.pipelines = changes['pipelines'].currentValue;
+      this.maxForces = this.getMaxForces();
       this.updateData(parseInt(this.selectedOption, 10));
     }
   }
@@ -61,41 +56,125 @@ export class DataVisualisationComponent implements OnChanges {
   }
 
   // Update the data variable
-  private updateData(l: number) {
+  private updateData(l: number): Promise<void> {
 
-    //First we need to find the pipeline we want the data from
-    const pipe = this.pipelines.find(item => item.buoyancySectionLength === l);
+    return new Promise<void>((resolve) => {
 
-    // Next we assign the coordinates to the first index of the array
-    if (pipe) {
-      this.data[0] = pipe.coordinates;
-      this.data[1] = this.genCoords(pipe.bendingMoments);
-      this.data[2] = this.genCoords(pipe.shearForces);
-      this.data[3] = this.genCoords(pipe.axialTensionForces);
-    }
+      // First determine if it is a buoyancy section length or max forces:
+      if (l == 0) {
+
+        // Display max forces
+        this.yAxisNames = [
+          'Max/min elevation (m)',
+          'Max abs. bending moment (N*m)*10^7',
+          'Max shear force (N)*10^5',
+          'Axial tension force (N)*10^4'
+        ];
+
+        this.yLimits = [
+          [-15, 10],
+          [0, 2.5],
+          [2, 8],
+          [0, 12]
+        ];
+
+        this.xLimits = [0, 100];
+
+        this.data[0] = this.genCoords(this.maxForces.maxMinElevation[0], 0, 1);
+        this.data[1] = this.genCoords(this.maxForces.maxMinBendingMoments[0], 0, 1);
+        this.data[2] = this.genCoords(this.maxForces.maxShearForces, 0, 1);
+
+      } else {
+
+        this.yAxisNames = [
+          'Elevation (m)',
+          'Bending moment (N*m)*10^7',
+          'Shear force (N)*10^5',
+          'Axial tension force (N)*10^4'
+        ];
+
+        this.yLimits = [
+          [-5, 5],
+          [-2, 2],
+          [-5, 5],
+          [-1, 2.5]
+        ];
+
+        this.xLimits = [0, 200];
+
+        //First we need to find the pipeline we want the data from
+        const pipe = this.pipelines.find(item => item.buoyancySectionLength === l);
+
+        // Next we assign the coordinates to the first index of the array
+        if (pipe) {
+          this.data[0] = pipe.coordinates;
+          this.data[1] = this.genCoords(pipe.bendingMoments, 100000000000, this.deltaS);
+          this.data[2] = this.genCoords(pipe.shearForces, 10000000000, this.deltaS);
+          //this.data[3] = this.genCoords(pipe.axialTensionForces, 0);
+        }
+      }
+
+      resolve();
+
+    })
     
   }
 
-  private genCoords(yVals: number[]): number[][] {
+  private genCoords(yVals: number[], divFactor: number, deltaX: number): number[][] {
     let xyVals: number[][] = [];
-    let x = 0
+    let x = 0;
 
     for (let yVal of yVals) {
-      xyVals.push([x*18.5, yVal*0.0000000000035]);
-      x += this.deltaS;
+      xyVals.push([x, yVal/divFactor]);
+      x += deltaX;
     }
 
     return xyVals;
   }
 
-  public collectChartData() {
-    // First we need to collect the data for each length of buoyancy section.
-    // We will collect data for 40m, 50m, 60m, 70m and 80m
-    for (let length in [40, 50, 60, 70, 80]) {
-      
+  public getMaxForces(): IMaxForces {
+    var maxForces: IMaxForces;
+
+    var maxMinElevation: number[][] = [];
+    var maxMinBendingMoments: number[][] = [];
+    var maxShearForces: number[] = [];
+    //var maxAxialTension: number[] = [];
+
+    for (let i = 0; i <= 40; i++) {
+      let [maxElevation, minElevation, maxBendingMoment, minAbsBendingMoment, maxShearForce, maxAxialTension] = this.findMaxForces(this.pipelines[i])
+      maxMinElevation.push([maxElevation, minElevation]);
+      maxMinBendingMoments.push([maxBendingMoment, minAbsBendingMoment]);
+      maxShearForces.push(maxShearForce);
+      //maxAxialTension.push(maxAxialTension)
     }
-    console.log('Child function called!');
+
+    maxForces = {
+      maxMinElevation: maxMinElevation,
+      maxMinBendingMoments: maxMinBendingMoments,
+      maxShearForces: maxShearForces,
+      //maxAxialTension: maxAxialTension
+    }
+
+    return maxForces;
   }
-  
+
+
+  // Takes an IPipeline object as input and returns an array of its max forces
+  public findMaxForces(pipeline: IPipeline) {
+    // Defining all the max forces
+    let zVals: number[] = [];
+    for (let i = 0; i < pipeline.coordinates.length; i++) {
+      zVals.push(pipeline.coordinates[i][1]);
+    }
+    let maxElevation: number = Math.max(...zVals);
+    let minElevation: number = Math.min(...zVals);
+    let maxBendingMoment: number = Math.max(...pipeline.bendingMoments);
+    let minAbsBendingMoment: number = Math.abs(Math.min(...pipeline.bendingMoments));
+    let maxShearForce: number = Math.max(...pipeline.shearForces);
+    let maxAxialTension: number = Math.max(...pipeline.axialTensionForces);
+
+    // Returning max forces in an array
+    return [maxElevation, minElevation, maxBendingMoment, minAbsBendingMoment, maxShearForce, maxAxialTension];
+  }
 
 }

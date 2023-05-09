@@ -13,6 +13,11 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { SettingsComponent } from './components/settings/settings.component';
 import { ChartComponent } from './components/data-visualisation/chart/chart.component';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule } from '@angular/material/dialog';
+import { SubmitDialogComponent } from './dialogues/submit-dialog/submit-dialog.component';
+import { ExportDialogComponent } from './dialogues/export-dialog/export-dialog.component';
+import { InvalidExportDialogComponent } from './dialogues/invalid-export-dialog/invalid-export-dialog.component';
+import { ParameterErrorDialogComponent } from './dialogues/parameter-error-dialog/parameter-error-dialog.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +27,10 @@ import { MatSelectModule } from '@angular/material/select';
     DataVisualisationComponent,
     SettingsComponent,
     ChartComponent,
+    SubmitDialogComponent,
+    ExportDialogComponent,
+    InvalidExportDialogComponent,
+    ParameterErrorDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -32,7 +41,8 @@ import { MatSelectModule } from '@angular/material/select';
       echarts: () => import('echarts'),
     }),
     MatSelectModule,
-    FormsModule
+    FormsModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

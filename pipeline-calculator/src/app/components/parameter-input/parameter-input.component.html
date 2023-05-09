@@ -18,21 +18,24 @@
     
         </div>
         <div class="parent">
-            <div class="child"><input id="finite-difference-subinteval-amount" type="number" formControlName="finiteDifferenceSubintervalAmount"></div>
-            <div class="child"><input id="pipeline-outer-diameter" type="number" formControlName="pipelineOuterDiameter"></div>
-            <div class="child"><input id="pipeline-wall-thickness" type="number" formControlName="pipelineWallThickness"></div>
-            <div class="child"><input id="pipeline-elasticity-modulus" type="number" formControlName="pipelineElasticityModulus"></div>
-            <div class="child"><input id="pipeline-density" type="number" formControlName="pipelineDensity"></div>
-            <div class="child"><input id="seawater-density" type="number" formControlName="seawaterDensity"></div>
-            <div class="child"><input id="span-length" type="number" formControlName="spanLength"></div>
-            <div class="child"><input id="elevation-gap" type="number" formControlName="elevationGap"></div>
-            <div class="child"><input id="span-shoulder-length" type="number" formControlName="spanShoulderLength"></div>
-            <div class="child"><input id="effective-axial-tension" type="number" formControlName="effectiveAxialTension"></div>
-            <div class="child"><input id="seafloor-stiffness" type="number" formControlName="seafloorStiffness"></div>
+            <div class="child"><input id="finite-difference-subinteval-amount" type="number" formControlName="finiteDifferenceSubintervalAmount"> m</div>
+            <div class="child"><input id="pipeline-outer-diameter" type="number" formControlName="pipelineOuterDiameter"> m</div>
+            <div class="child"><input id="pipeline-wall-thickness" type="number" formControlName="pipelineWallThickness"> m</div>
+            <div class="child"><input id="pipeline-elasticity-modulus" type="number" formControlName="pipelineElasticityModulus"> N/m^2</div>
+            <div class="child"><input id="pipeline-density" type="number" formControlName="pipelineDensity"> kg/m^3</div>
+            <div class="child"><input id="seawater-density" type="number" formControlName="seawaterDensity"> kg/m^3</div>
+            <div class="child"><input id="span-length" type="number" formControlName="spanLength"> m</div>
+            <div class="child"><input id="elevation-gap" type="number" formControlName="elevationGap"> m</div>
+            <div class="child"><input id="span-shoulder-length" type="number" formControlName="spanShoulderLength"> m</div>
+            <div class="child"><input id="effective-axial-tension" type="number" formControlName="effectiveAxialTension"> N</div>
+            <div class="child"><input id="seafloor-stiffness" type="number" formControlName="seafloorStiffness"> N/m^2</div>
         </div>
     
     </form>
-    <button class="submit" mat-raised-button [disabled]="!parametersForm.valid" type="submit" (click)="onSubmit()">Submit Parameters</button>
+    <div style="display: flex; flex-direction: column;">
+        <button class="button" [disabled]="!parametersForm.valid" type="submit" (click)="onSubmit()">Submit Parameters</button>
+        <button class="button" (click)="resetParameters()">Reset Parameters</button>
+    </div>
 </div>
 
 
