@@ -12,13 +12,21 @@
     grid-auto-flow: column;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(12, 25px);
+    width: fit-content;
 }
 
 .child {
     padding-right: 15px;
+    width: 250px;
+    margin-right: -10px;
+}
+
+input {
+    width: 120px;
 }
 
 .button {
+    width: fit-content;
     margin-top: 10px;
     background-color: rgb(238, 238, 238);
     color: rgb(47, 47, 47);
