@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
     "postinstall": "npm install -g @angular/cli@15.2.3"
   },
   "private": true,
@@ -34,7 +35,7 @@
     "@angular-devkit/build-angular": "^15.2.3",
     "@angular/compiler-cli": "^15.2.8",
     "@babel/preset-typescript": "^7.21.4",
-    "@types/jasmine": "~4.0.0",
+    "@types/echarts": "^4.9.17",
     "@types/jest": "^29.5.0",
     "@types/numeric": "^1.2.2",
     "@types/react": "^18.2.5",

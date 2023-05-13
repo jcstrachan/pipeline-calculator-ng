@@ -42,7 +42,7 @@ export class AppComponent {
     for (let l = 40; l <= 80; l++) {
       // The first step to the calculations is to get the theta values and z coordinates
       const thetaValues = this.getThetaValues(this.deltaS, l);
-      let xzVals: number[][] = this.calculateXZ(w_g, this.deltaS, l);
+      let xzVals: number[][] = this.calculateXZ(this.deltaS, l);
 
       // Next we back-calculate the forces acting on the pipeline
       const bendingMoments: number[] = this.getBendingMoments(thetaValues, this.deltaS);
@@ -58,6 +58,9 @@ export class AppComponent {
       }
       pipelines.push(pipeline);
     }
+
+    var jsonData = JSON.stringify(pipelines);
+    console.log(jsonData)
 
     return pipelines;
 
@@ -85,7 +88,7 @@ export class AppComponent {
     return thetaValues;
   }
 
-  public calculateXZ(w_g: number, deltaS: number, l: number): number[][] {
+  public calculateXZ(deltaS: number, l: number): number[][] {
     // Initialising required variables
     const a = -1.6 + (l - 40)/10;
     let xzVals: number[][] = [];
@@ -122,14 +125,14 @@ export class AppComponent {
     return shearForces;
   }
 
-  public getAxialTension(thetaValues: number[]) {
-    // Calculate the axial tension at each interval
-    var axialTensions: number[] = [];
-    for (let i = 1; i < (this.parameters.spanLength/this.parameters.finiteDifferenceSubintervalAmount); i++) {
-      // First step is to calculate the sum of the node seafloor support reactions minus 
-      this.parameters.effectiveAxialTension * Math.cos(thetaValues[i])
-    }
-  }
+  // public getAxialTension(thetaValues: number[]) {
+  //   // Calculate the axial tension at each interval
+  //   var axialTensions: number[] = [];
+  //   for (let i = 1; i < (this.parameters.spanLength/this.parameters.finiteDifferenceSubintervalAmount); i++) {
+  //     // First step is to calculate the sum of the node seafloor support reactions minus 
+  //     this.parameters.effectiveAxialTension * Math.cos(thetaValues[i])
+  //   }
+  // }
 
   @ViewChild(ExportSettingsComponent, {static: false}) exportSettings!: ExportSettingsComponent;
 
@@ -152,5 +155,10 @@ export class AppComponent {
 
   }
 
+  }
+
+  submitDialog() {
+    this.dialog.open(SubmitDialogComponent);
+  }
 
 }

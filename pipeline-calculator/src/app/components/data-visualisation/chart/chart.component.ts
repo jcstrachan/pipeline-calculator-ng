@@ -20,7 +20,7 @@ export class ChartComponent {
     this.updateChart(changes['data'].currentValue);
   }
 
-  private updateChart(newData: any) {
+  public updateChart(newData: any) {
     this.chartOption = {
       grid: {
         top: 40,
