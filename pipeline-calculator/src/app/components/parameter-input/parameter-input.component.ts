@@ -12,17 +12,17 @@ export class ParameterInputComponent {
   @Output() parameterEmitter = new EventEmitter();
 
   public parametersForm = new FormGroup({
-    finiteDifferenceSubintervalAmount: new FormControl<number>(800, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
-    pipelineOuterDiameter: new FormControl<number>(1.22, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
-    pipelineWallThickness: new FormControl<number>(0.0318, {nonNullable: true, validators: [Validators.required, Validators.min(0)]}),
-    pipelineElasticityModulus: new FormControl<number>(210000000000, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
-    pipelineDensity: new FormControl<number>(7850, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
-    seawaterDensity: new FormControl<number>(1030, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
-    spanLength: new FormControl<number>(200, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
-    elevationGap: new FormControl<number>(0, {nonNullable: true, validators: [Validators.required]}),
-    spanShoulderLength: new FormControl<number>(100, {nonNullable: true, validators: [Validators.required, Validators.min(1)]}),
-    effectiveAxialTension: new FormControl<number>(0, {nonNullable: true, validators: [Validators.required]}),
-    seafloorStiffness: new FormControl<number>(4000, {nonNullable: true, validators: [Validators.required, Validators.min(1)]})
+    finiteDifferenceSubintervalAmount: new FormControl<number>(800, {validators: [Validators.required, Validators.min(1)]}),
+    pipelineOuterDiameter: new FormControl<number>(1.22, {validators: [Validators.required, Validators.min(1)]}),
+    pipelineWallThickness: new FormControl<number>(0.0318, {validators: [Validators.required, Validators.min(0)]}),
+    pipelineElasticityModulus: new FormControl<number>(210000000000, {validators: [Validators.required, Validators.min(1)]}),
+    pipelineDensity: new FormControl<number>(7850, {validators: [Validators.required, Validators.min(1)]}),
+    seawaterDensity: new FormControl<number>(1030, {validators: [Validators.required, Validators.min(1)]}),
+    spanLength: new FormControl<number>(200, {validators: [Validators.required, Validators.min(1)]}),
+    elevationGap: new FormControl<number>(0, {validators: [Validators.required]}),
+    spanShoulderLength: new FormControl<number>(100, {validators: [Validators.required, Validators.min(1)]}),
+    effectiveAxialTension: new FormControl<number>(0, {validators: [Validators.required]}),
+    seafloorStiffness: new FormControl<number>(4000, {validators: [Validators.required, Validators.min(1)]})
   });
 
   onSubmit() {
@@ -40,6 +40,20 @@ export class ParameterInputComponent {
       seafloorStiffness: this.parametersForm.value.seafloorStiffness || 0
     }
     this.parameterEmitter.emit(parameters);
+  }
+
+  resetParameters() {
+    this.parametersForm.controls['finiteDifferenceSubintervalAmount'].setValue(0);
+    this.parametersForm.controls['pipelineOuterDiameter'].setValue(0);
+    this.parametersForm.controls['pipelineWallThickness'].setValue(0);
+    this.parametersForm.controls['pipelineElasticityModulus'].setValue(0);
+    this.parametersForm.controls['pipelineDensity'].setValue(0);
+    this.parametersForm.controls['seawaterDensity'].setValue(0);
+    this.parametersForm.controls['spanLength'].setValue(0);
+    this.parametersForm.controls['elevationGap'].setValue(0);
+    this.parametersForm.controls['spanShoulderLength'].setValue(0);
+    this.parametersForm.controls['effectiveAxialTension'].setValue(0);
+    this.parametersForm.controls['seafloorStiffness'].setValue(0);
   }
 
 }

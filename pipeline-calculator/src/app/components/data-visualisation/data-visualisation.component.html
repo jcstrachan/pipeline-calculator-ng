@@ -10,16 +10,17 @@
   </mat-form-field>
 </div>
 
-<div *ngIf="!this.data">
-  <h2>*Submit parameters to display graphs*</h2>
+<div *ngIf="this.data.length === 0">
+  <h3>Please submit parameters to display graphs!</h3>
 </div>
 
-<div *ngIf="this.data" style="display: flex; flex-direction: row; margin-top: -15px;">
-    <div class="charts" *ngFor="let x of [0, 1, 2, 3]">
+<div *ngIf="this.data.length > 0" style="display: flex; flex-direction: row; margin-top: -15px;">
+    <div class="charts" *ngFor="let x of [0, 1, 2]">
         <app-chart
             [data]="this.data[x]" 
             [yAxisName]="this.yAxisNames[x]"
-            [yLimits]="this.yLimits[x]">
+            [yLimits]="this.yLimits[x]"
+            [xLimits]="this.xLimits">
         </app-chart>
     </div>
 </div>

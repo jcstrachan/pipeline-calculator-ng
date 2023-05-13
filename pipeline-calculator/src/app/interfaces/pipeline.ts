@@ -6,3 +6,6 @@ export interface IPipeline {
     axialTensionForces: number[];
     supportReactions: number[];
 }
+
+
+

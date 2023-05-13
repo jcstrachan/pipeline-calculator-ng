@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChange, SimpleChanges } from '@angular/core';
-import { EChartsOption } from 'echarts';
+import * as echarts from 'echarts';
 
 @Component({
   selector: 'app-chart',
@@ -11,18 +11,17 @@ export class ChartComponent {
   @Input() data: number[][] = [];
   @Input() yAxisName: string = '';
   @Input() yLimits: number[] = [];
-  xAxisName: string = 'Length of buoyancysection (m)';
+  @Input() xLimits: number[] = [];
+  xAxisName: string = 'Length of buoyancy section (m)';
 
-  chartOption: EChartsOption = {};
+  chartOption: echarts.EChartsOption = {};
   
   ngOnChanges(changes: SimpleChanges) {
-    console.log("New data: ", changes['data'].currentValue)
     this.updateChart(changes['data'].currentValue);
   }
 
   public updateChart(newData: any) {
     this.chartOption = {
-      animation: false,
       grid: {
         top: 40,
         left: 50,
@@ -31,8 +30,8 @@ export class ChartComponent {
       },
       xAxis: {
         name: this.xAxisName,
-        min: 0,
-        max: 100,
+        min: this.xLimits[0],
+        max: this.xLimits[1],
         minorTick: {
           show: true
         },
@@ -69,8 +68,46 @@ export class ChartComponent {
           clip: true,
           data: newData
         }
-      ]
+      ],
+      dataZoom: [
+        {
+          type: 'inside',
+          xAxisIndex: 0,
+          filterMode: 'none',
+          zoomOnMouseWheel: true,
+          moveOnMouseMove: true
+        },
+        {
+          type: 'slider',
+          xAxisIndex: 0,
+          filterMode: 'none',
+          show: false
+        }
+      ],
+      animation: false,
+      tooltip: {
+        show: false
+      }
     };
+
+  }
+
+  public getURL(): string {
+    console.log("Getting chart for yaxis: ", this.yAxisName);
+
+    const chartElement = document.getElementById('chart') as HTMLElement;
+    const chart = echarts.init(chartElement);
+    var dataURL: string = '';
+
+    chart.on('finished', () => {
+      dataURL = chart.getDataURL({ type: 'png', pixelRatio: 2});
+      console.log(dataURL);
+    });
+
+    chart.setOption(this.chartOption);
+
+    
+    return dataURL;
   }
   
 }

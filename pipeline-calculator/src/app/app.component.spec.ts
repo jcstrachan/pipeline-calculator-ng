@@ -55,4 +55,5 @@ describe('AppComponent', () => {
 
     expect(dialog.open).toHaveBeenCalledWith(ParameterErrorDialogComponent);
   });
+
 });

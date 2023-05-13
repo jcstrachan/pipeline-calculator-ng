@@ -1,26 +1,24 @@
 <div class="container-title">
   Pipeline Buoyancy Module Calculator
+  <a class="manual-download" href="#" (click)="downloadManual()">User Manual</a>
 </div>
-<div class="container content">
-  <div class="left">
-      <div class="top">
-        <div class="container parameters">
-        <app-parameter-input
-          (parameterEmitter)="updateParameters($event)"
-        ></app-parameter-input>
-      </div>
-      <div class="container export-options">
-        <app-export-settings></app-export-settings>
-      </div>
-      </div>
-      <div class="container data-vis">
-        <app-data-visualisation
-          [_pipelines]="this.pipelineResults"
-          [deltaS]="this.deltaS"
-        ></app-data-visualisation>
-      </div>
+<div class="container content main">
+  <div class="top">
+    <div class="container parameters">
+    <app-parameter-input
+      (parameterEmitter)="updateParameters($event)"
+    ></app-parameter-input>
   </div>
-  <div class="container  settings">
-    <app-settings></app-settings>
+  <div class="container export-options">
+    <app-export-settings
+      (exportEmitter)="exportData($event)"
+    ></app-export-settings>
+  </div>
+  </div>
+  <div class="container data-vis">
+    <app-data-visualisation
+      [pipelines]="this.pipelineResults"
+      [deltaS]="this.deltaS"
+    ></app-data-visualisation>
   </div>
 </div>
