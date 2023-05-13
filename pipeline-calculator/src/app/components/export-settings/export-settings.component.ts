@@ -223,7 +223,7 @@ export class ExportSettingsComponent implements OnInit {
     doc.save('file.pdf');
   }
 
-  private genCoords(yVals: number[], deltaS: number, divFactor: number): number[][] {
+  public genCoords(yVals: number[], deltaS: number, divFactor: number): number[][] {
     let xyVals: number[][] = [];
     let x = 0;
 

@@ -4,6 +4,7 @@ import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dial
 import { render } from 'react-dom';
 import { SubmitDialogComponent } from './dialogues/submit-dialog/submit-dialog.component';
 import { ParameterErrorDialogComponent } from './dialogues/parameter-error-dialog/parameter-error-dialog.component';
+import { IPipelineParameters } from './interfaces/pipeline-parameters';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
@@ -24,6 +25,33 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
+  });
+
+  it('should call submitDialog and calculatePipelines with the new parameters', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const spySubmitDialog = jest.spyOn(component, 'submitDialog');
+    const spyCalculatePipelines = jest.spyOn(component, 'calculatePipelines');
+
+    const newParams: IPipelineParameters = {
+      finiteDifferenceSubintervalAmount: 1,
+      pipelineOuterDiameter: 2,
+      pipelineWallThickness: 3,
+      pipelineElasticityModulus: 4,
+      pipelineDensity: 5,
+      seawaterDensity: 6,
+      spanLength: 7,
+      elevationGap: 8,
+      spanShoulderLength: 9,
+      effectiveAxialTension: 10,
+      seafloorStiffness: 11,
+    };
+
+    component.updateParameters(newParams);
+
+    expect(spySubmitDialog).toHaveBeenCalledTimes(1);
+    expect(component.parameters).toEqual(newParams);
+    expect(spyCalculatePipelines).toHaveBeenCalledTimes(1);
   });
 
   it('should get the correct shear forces', () => {

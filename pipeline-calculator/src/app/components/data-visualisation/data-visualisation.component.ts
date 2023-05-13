@@ -56,7 +56,7 @@ export class DataVisualisationComponent implements OnChanges {
   }
 
   // Update the data variable
-  private updateData(l: number): Promise<void> {
+  public updateData(l: number): Promise<void> {
 
     return new Promise<void>((resolve) => {
 
@@ -120,7 +120,7 @@ export class DataVisualisationComponent implements OnChanges {
     
   }
 
-  private genCoords(yVals: number[], divFactor: number, deltaX: number): number[][] {
+  public genCoords(yVals: number[], divFactor: number, deltaX: number): number[][] {
     let xyVals: number[][] = [];
     let x = 0;
 

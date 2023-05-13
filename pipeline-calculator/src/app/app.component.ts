@@ -155,10 +155,4 @@ export class AppComponent {
 
   }
 
-  }
-
-  submitDialog() {
-    this.dialog.open(SubmitDialogComponent);
-  }
-
 }
