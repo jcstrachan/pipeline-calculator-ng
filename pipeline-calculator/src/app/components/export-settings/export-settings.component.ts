@@ -89,17 +89,17 @@ export class ExportSettingsComponent implements OnInit {
       if (pipe) {
         // get the elevation chart
         const chart = echarts.init(canvas);
-        chart.setOption(this.getChartOption(pipe.coordinates, 'Elevation (m)', [-5, 5]));
+        chart.setOption(this.getChartOption(pipe.coordinates, 'Elevation (m)', [-5, 5], pipe.buoyancySectionLength));
         const elevImage = chart.getDataURL();
         this.elevationURLs.push(elevImage);
 
         // get the bending moments chart
-        chart.setOption(this.getChartOption(this.genCoords(pipe.bendingMoments, deltaS, 100000000000), 'Bending moment (N*m)*10^7', [-2, 2]))
+        chart.setOption(this.getChartOption(this.genCoords(pipe.bendingMoments, deltaS, 100000000000), 'Bending moment (N*m)*10^7', [-2, 2], pipe.buoyancySectionLength))
         const bendImage = chart.getDataURL();
         this.bendingURLs.push(bendImage);
 
         // get the shear forces chart
-        chart.setOption(this.getChartOption(this.genCoords(pipe.shearForces, deltaS, 10000000000), 'Shear force (N)*10^5', [-5, 5]));
+        chart.setOption(this.getChartOption(this.genCoords(pipe.shearForces, deltaS, 10000000000), 'Shear force (N)*10^5', [-5, 5], pipe.buoyancySectionLength));
         const shearImage = chart.getDataURL();
         this.shearURLs.push(shearImage);
       }
@@ -235,7 +235,7 @@ export class ExportSettingsComponent implements OnInit {
     return xyVals;
   }
 
-  public getChartOption(data: number[][], yAxisName: string, yLimits: number[]): echarts.EChartsOption {
+  public getChartOption(data: number[][], yAxisName: string, yLimits: number[], length: number): echarts.EChartsOption {
     let chartOption: echarts.EChartsOption = {
       animation: false,
       grid: {
@@ -280,6 +280,12 @@ export class ExportSettingsComponent implements OnInit {
         },
         axisLabel: {
           fontSize: 16
+        }
+      },
+      title: {
+        text: 'Buoyancy Section Length: ' + String(length),
+        textStyle: {
+          fontWeight: 'normal'
         }
       },
       series: [
