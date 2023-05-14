@@ -152,7 +152,8 @@ export class AppComponent {
   }
 
   downloadManual() {
-
+    const url = '../assets/user_manual.pdf';
+    window.open(url, '_blank');
   }
 
 }
