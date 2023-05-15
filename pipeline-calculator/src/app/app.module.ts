@@ -10,7 +10,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { DataVisualisationComponent } from './components/data-visualisation/data-visualisation.component';
 import { NgxEchartsModule } from 'ngx-echarts';
-import { SettingsComponent } from './components/settings/settings.component';
 import { ChartComponent } from './components/data-visualisation/chart/chart.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -25,7 +24,6 @@ import { ParameterErrorDialogComponent } from './dialogues/parameter-error-dialo
     ParameterInputComponent,
     ExportSettingsComponent,
     DataVisualisationComponent,
-    SettingsComponent,
     ChartComponent,
     SubmitDialogComponent,
     ExportDialogComponent,

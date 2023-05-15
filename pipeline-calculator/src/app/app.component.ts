@@ -48,6 +48,7 @@ export class AppComponent {
       const bendingMoments: number[] = this.getBendingMoments(thetaValues, this.deltaS);
       const shearForces: number[] = this.getShearForces(bendingMoments, this.deltaS);
 
+      // Create an ew pipeline object and assign the values
       let pipeline: IPipeline = {
         buoyancySectionLength: l,
         coordinates: xzVals,
@@ -58,9 +59,6 @@ export class AppComponent {
       }
       pipelines.push(pipeline);
     }
-
-    var jsonData = JSON.stringify(pipelines);
-    console.log(jsonData)
 
     return pipelines;
 
@@ -109,6 +107,7 @@ export class AppComponent {
     var E = this.parameters.pipelineElasticityModulus;
     var I = Math.PI / (4 * ((this.parameters.pipelineOuterDiameter/2)^4 - (this.parameters.pipelineOuterDiameter/2 - this.parameters.pipelineWallThickness)^4));
     var bendingMoments: number[] = [];
+    // Loop through the theta values, implementing the bending moment equation
     for (let i = 1; i < thetaValues.length; i++) {
       let M = E * I * ((thetaValues[i] - thetaValues[i-1])/deltaS);
       bendingMoments.push(M);
@@ -118,6 +117,8 @@ export class AppComponent {
 
   public getShearForces(bendingMoments: number[], deltaS: number): number[] {
     var shearForces: number[] = [];
+
+    // Loop through the bending moments and calculate the shear force using the shear force equat ion
     for (let i = 1; i < bendingMoments.length; i++) {
       let S = -(bendingMoments[i] - bendingMoments[i-1]) / deltaS;
       shearForces.push(S);
@@ -137,6 +138,8 @@ export class AppComponent {
   @ViewChild(ExportSettingsComponent, {static: false}) exportSettings!: ExportSettingsComponent;
 
   public async exportData(event: Event) {
+    // If pipeline data has been calculated and is valid, export it.
+    // If it is not, open the paramater error dialog
     if (event && this.pipelineResults.length != 0) {
 
       this.exportSettings.beginExport(this.pipelineResults, this.deltaS);
@@ -147,10 +150,12 @@ export class AppComponent {
 
   }
 
+  // Opens the submit dialog
   submitDialog() {
     this.dialog.open(SubmitDialogComponent);
   }
 
+  // Downloads the user manual PDF
   downloadManual() {
     const url = '../assets/user_manual.pdf';
     window.open(url, '_blank');

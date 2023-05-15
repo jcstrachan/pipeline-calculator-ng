@@ -11,6 +11,7 @@ export class ParameterInputComponent {
 
   @Output() parameterEmitter = new EventEmitter();
 
+  // Create a new parameter FormGroup and populate it with configured FormControl instances
   public parametersForm = new FormGroup({
     finiteDifferenceSubintervalAmount: new FormControl<number>(800, {validators: [Validators.required, Validators.min(1)]}),
     pipelineOuterDiameter: new FormControl<number>(1.22, {validators: [Validators.required, Validators.min(1)]}),
@@ -25,6 +26,8 @@ export class ParameterInputComponent {
     seafloorStiffness: new FormControl<number>(4000, {validators: [Validators.required, Validators.min(1)]})
   });
 
+  // Creates a new parameters object and assigns the values in the form to the object
+  // Then emits the data for the parent component
   onSubmit() {
     var parameters: IPipelineParameters = {
       finiteDifferenceSubintervalAmount: this.parametersForm.value.finiteDifferenceSubintervalAmount || 0,
@@ -42,6 +45,7 @@ export class ParameterInputComponent {
     this.parameterEmitter.emit(parameters);
   }
 
+  // Sets all parameter values to 0
   resetParameters() {
     this.parametersForm.controls['finiteDifferenceSubintervalAmount'].setValue(0);
     this.parametersForm.controls['pipelineOuterDiameter'].setValue(0);

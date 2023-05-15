@@ -164,8 +164,9 @@ describe('ExportSettingsComponent', () => {
     const data = [[0, 1], [1, 2], [2, 3]];
     const yAxisName = 'Test Y Axis';
     const yLimits = [0, 10];
+    const length = 10
   
-    const result = component.getChartOption(data, yAxisName, yLimits);
+    const result = component.getChartOption(data, yAxisName, yLimits, length);
 
     expect(result).toEqual({
       animation: false,
@@ -211,6 +212,12 @@ describe('ExportSettingsComponent', () => {
         },
         axisLabel: {
           fontSize: 16
+        }
+      },
+      title: {
+        text: 'Buoyancy Section Length: ' + String(length),
+        textStyle: {
+          fontWeight: 'normal'
         }
       },
       series: [

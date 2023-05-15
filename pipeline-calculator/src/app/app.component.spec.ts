@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { render } from 'react-dom';
 import { SubmitDialogComponent } from './dialogues/submit-dialog/submit-dialog.component';
 import { ParameterErrorDialogComponent } from './dialogues/parameter-error-dialog/parameter-error-dialog.component';
 import { IPipelineParameters } from './interfaces/pipeline-parameters';

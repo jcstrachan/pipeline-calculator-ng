@@ -48,6 +48,8 @@ export class ExportSettingsComponent implements OnInit {
     this.downloadOptions[optionNumber] = !this.downloadOptions[optionNumber];
   }
 
+  // Calls export functions depending on which export options were selected
+  // Opens the invalid export settings dialog if no settings were chosen
   public async beginExport(pipelines: IPipeline[], deltaS: number) {
     if (this.downloadOptions[0] === false && this.downloadOptions[1] === false) {
       this.dialog.open(InvalidExportDialogComponent);
@@ -64,6 +66,7 @@ export class ExportSettingsComponent implements OnInit {
     }
   }
 
+  // Stringifys the pipeline data, assigns it to a URL, then downloads the data as a JSON file.
   public exportJSON(pipelines: IPipeline[]) {
     const jsonFile = JSON.stringify(pipelines);
     const blob = new Blob([jsonFile], { type: 'application/json' });
@@ -75,7 +78,9 @@ export class ExportSettingsComponent implements OnInit {
     URL.revokeObjectURL(url);
   }
 
+  // Creates and exports a PDF using the jsPDF module
   public async exportPDF(pipelines: IPipeline[], deltaS: number) {
+    // Setting up the variables
     this.elevationURLs, this.bendingURLs, this.shearURLs = []
     const doc = new jsPDF();
     const canvas = document.createElement('canvas');
@@ -109,6 +114,7 @@ export class ExportSettingsComponent implements OnInit {
 
     doc.setFontSize(12);
 
+    // Only runs if the explanations option was checked
     if (this.downloadOptions[2]==true) {
       doc.setFontSize(16);
       doc.text('Pipeline Buoyancy Module Calculator', 10, docY);
@@ -132,6 +138,7 @@ export class ExportSettingsComponent implements OnInit {
     doc.addImage(this.elevationURLs[4], 'PNG', 120, docY, 60, 60);
     docY += 70;
 
+    // Only runs if the explanations option was checked
     if (this.downloadOptions[2]==true) {
       lines = doc.splitTextToSize('Next, the bending moments acting along the pipeline are calculated. To do this, we use the results from the previous calculations in the following equation: ', 180);
       doc.text(lines, 10, docY);
@@ -160,6 +167,7 @@ export class ExportSettingsComponent implements OnInit {
     doc.addImage(this.bendingURLs[3], 'PNG', 40, docY, 60, 60);
     doc.addImage(this.bendingURLs[4], 'PNG', 120, docY, 60, 60);
 
+    // Only runs if the explanations option was NOT checked
     if (!this.downloadOptions[2]){
       doc.addPage();
       docY = 20;
@@ -167,6 +175,7 @@ export class ExportSettingsComponent implements OnInit {
       docY += 70;
     }
 
+    // Only runs if the explanations option was checked
     if (this.downloadOptions[2]==true) {
       lines = doc.splitTextToSize('Now that the bending moments across the pipeline have been calculated, we can now use the results to calculate the shear force across the pipeline by using the following equation: ', 180);
       doc.text(lines, 10, docY);
@@ -196,6 +205,7 @@ export class ExportSettingsComponent implements OnInit {
     doc.addImage(this.shearURLs[4], 'PNG', 120, docY, 60, 60);
     docY += 70;
 
+    // Only runs if the explanations option was checked
     if (this.downloadOptions[2]==true) {
       docY = 10;
       doc.addPage();
@@ -220,9 +230,11 @@ export class ExportSettingsComponent implements OnInit {
 
     }
 
+    // Downloads the PDF file
     doc.save('file.pdf');
   }
 
+  // Returns coordinates by assigning an x value to each input y value
   public genCoords(yVals: number[], deltaS: number, divFactor: number): number[][] {
     let xyVals: number[][] = [];
     let x = 0;
@@ -235,6 +247,7 @@ export class ExportSettingsComponent implements OnInit {
     return xyVals;
   }
 
+  // Creates a new chart option, assigning the input parameters to their correct position and returns the object
   public getChartOption(data: number[][], yAxisName: string, yLimits: number[], length: number): echarts.EChartsOption {
     let chartOption: echarts.EChartsOption = {
       animation: false,

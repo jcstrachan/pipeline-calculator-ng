@@ -16,10 +16,12 @@ export class ChartComponent {
 
   chartOption: echarts.EChartsOption = {};
   
+  // Detects when changes to the data have been made and calls the updateChart function
   ngOnChanges(changes: SimpleChanges) {
     this.updateChart(changes['data'].currentValue);
   }
 
+  // Updates the ECharts chartOption associated with the eChart in the HTML file
   public updateChart(newData: any) {
     this.chartOption = {
       grid: {

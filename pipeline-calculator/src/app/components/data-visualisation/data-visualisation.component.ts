@@ -42,6 +42,7 @@ export class DataVisualisationComponent implements OnChanges {
   }
   @Input() deltaS: number = 1;
 
+  // If the pipeline parameters change, this function will be called
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['pipelines'].currentValue.length > 0) {
       this.pipelines = changes['pipelines'].currentValue;
@@ -50,6 +51,7 @@ export class DataVisualisationComponent implements OnChanges {
     }
   }
 
+  // If the selection option in the HTML file is changed, this will update the selection value
   public onSelectionChange(event: MatSelectChange): void {
     this.selectedOption = event.value;
     this.updateData(parseInt(event.value, 10));
@@ -63,7 +65,7 @@ export class DataVisualisationComponent implements OnChanges {
       // First determine if it is a buoyancy section length or max forces:
       if (l == 0) {
 
-        // Display max forces
+        // Sets y axis names to the max forces axis names
         this.yAxisNames = [
           'Max/min elevation (m)',
           'Max abs. bending moment (N*m)*10^7',
@@ -86,6 +88,7 @@ export class DataVisualisationComponent implements OnChanges {
 
       } else {
 
+        // assigns the normal axis names
         this.yAxisNames = [
           'Elevation (m)',
           'Bending moment (N*m)*10^7',
@@ -120,26 +123,30 @@ export class DataVisualisationComponent implements OnChanges {
     
   }
 
-  public genCoords(yVals: number[], divFactor: number, deltaX: number): number[][] {
+  // Returns coordinates by assigning an x value to each input y value
+  public genCoords(yVals: number[], divFactor: number, deltaS: number): number[][] {
     let xyVals: number[][] = [];
     let x = 0;
 
     for (let yVal of yVals) {
       xyVals.push([x, yVal/divFactor]);
-      x += deltaX;
+      x += deltaS;
     }
 
     return xyVals;
   }
 
+  // Finds the max forces of each pipeline
   public getMaxForces(): IMaxForces {
     var maxForces: IMaxForces;
 
+    // Initialises the arrays
     var maxMinElevation: number[][] = [];
     var maxMinBendingMoments: number[][] = [];
     var maxShearForces: number[] = [];
     //var maxAxialTension: number[] = [];
 
+    // First gets the max forces for a specific pipe then appends it to the max forces arrays
     for (let i = 0; i <= 40; i++) {
       let [maxElevation, minElevation, maxBendingMoment, minAbsBendingMoment, maxShearForce, maxAxialTension] = this.findMaxForces(this.pipelines[i])
       maxMinElevation.push([maxElevation, minElevation]);
@@ -148,6 +155,7 @@ export class DataVisualisationComponent implements OnChanges {
       //maxAxialTension.push(maxAxialTension)
     }
 
+    // Creates the object to return
     maxForces = {
       maxMinElevation: maxMinElevation,
       maxMinBendingMoments: maxMinBendingMoments,
@@ -161,11 +169,13 @@ export class DataVisualisationComponent implements OnChanges {
 
   // Takes an IPipeline object as input and returns an array of its max forces
   public findMaxForces(pipeline: IPipeline) {
-    // Defining all the max forces
+    // Adding the x coordinate to the z values
     let zVals: number[] = [];
     for (let i = 0; i < pipeline.coordinates.length; i++) {
       zVals.push(pipeline.coordinates[i][1]);
     }
+
+    // Determine the max and/or mine value of each force
     let maxElevation: number = Math.max(...zVals);
     let minElevation: number = Math.min(...zVals);
     let maxBendingMoment: number = Math.max(...pipeline.bendingMoments);
